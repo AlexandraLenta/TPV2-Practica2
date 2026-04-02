@@ -36,42 +36,56 @@ void PacManSystem::update() {
 	if (ihldr.keyDownEvent()) {
 
 		if (ihldr.isKeyDown(SDL_SCANCODE_RIGHT)) { // rotate right
-			_pmTR->_rot = _pmTR->_rot + 5.0f;
+			//_pmTR->_rot = _pmTR->_rot + 5.0f;
 
 			// also rotate the PacMan so it looks in the same
 			// direction where it moves
 			//
-			_pmTR->_vel = _pmTR->_vel.rotate(5.0f);
+
+			//_pmTR->_vel = _pmTR->_vel.rotate(5.0f);
+
+			_pmTR->_rot = _pmTR->_rot + 90.0f;
+			_pmTR->_vel = _pmTR->_vel.rotate(90.0f);
+
 		} else if (ihldr.isKeyDown(SDL_SCANCODE_LEFT)) { // rotate left
-			_pmTR->_rot = _pmTR->_rot - 5.0f;
+			//_pmTR->_rot = _pmTR->_rot - 5.0f;
 
 			// also rotate the PacMan so it looks in the same
 			// direction where it moves
 			//
-			_pmTR->_vel = _pmTR->_vel.rotate(-5.0f);
+			//_pmTR->_vel = _pmTR->_vel.rotate(-5.0f);
+
+			_pmTR->_rot = _pmTR->_rot - 90.0f;
+			_pmTR->_vel = _pmTR->_vel.rotate(-90.0f);
+
 		} else if (ihldr.isKeyDown(SDL_SCANCODE_UP)) { // increase speed
 
 			// add 1.0f to the speed (respecting the limit 3.0f). Recall
 			// that speed is the length of the velocity vector
-			float speed = std::min(3.0f, _pmTR->_vel.magnitude() + 1.0f);
+			//float speed = std::min(3.0f, _pmTR->_vel.magnitude() + 1.0f);
 
 			// change the length of velocity vecto to 'speed'. We need
 			// '.rotate(rot)' for the case in which the current speed is
 			// 0, so we rotate it to the same direction where the PacMan
 			// is looking
 			//
-			_pmTR->_vel = Vector2D(0, -speed).rotate(_pmTR->_rot);
+			//_pmTR->_vel = Vector2D(0, -speed).rotate(_pmTR->_rot);
+
+			_pmTR->_vel = Vector2D(0.0f, -3.0f).rotate(_pmTR->_rot);
+
 		} else if (ihldr.isKeyDown(SDL_SCANCODE_DOWN)) { // decrease speed
 			// subtract 1.0f to the speed (respecting the limit 0.0f). Recall
 			// that speed is the length of the velocity vector
-			float speed = std::max(0.0f, _pmTR->_vel.magnitude() - 1.0f);
+			//float speed = std::max(0.0f, _pmTR->_vel.magnitude() - 1.0f);
 
 			// change the length of velocity vector to 'speed'. We need
 			// '.rotate(rot)' for the case in which the current speed is
 			// 0, so we rotate it to the same direction where the PacMan
 			// is looking
 			//
-			_pmTR->_vel = Vector2D(0, -speed).rotate(_pmTR->_rot);
+			//_pmTR->_vel = Vector2D(0, -speed).rotate(_pmTR->_rot);
+
+			_pmTR->_vel = Vector2D(0.0f, 0.0f);
 		}
 
 	}
@@ -97,4 +111,18 @@ void PacManSystem::update() {
 		_pmTR->_vel.set(0.0f, 0.0f);
 	}
 
+}
+
+void PacManSystem::receive(const Message& m) {
+	switch (m.id) 
+	{
+	case _m_ROUND_START:
+		_pmTR->_pos.set((sdlutils().width() - _pmTR->_width) / 2.0f,(sdlutils().height() - _pmTR->_height) / 2.0f);
+		_pmTR->_vel.set(0.0f, 0.0f);
+		break;
+
+	case _m_NEW_GAME:
+		// reset vidas
+		break;
+	}
 }
