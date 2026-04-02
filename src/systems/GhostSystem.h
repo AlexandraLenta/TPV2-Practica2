@@ -1,6 +1,7 @@
 #pragma once
 #include "../ecs/System.h"
 #include "PacManSystem.h"
+#include <vector>
 
 class GhostSystem : public ecs::System
 {
