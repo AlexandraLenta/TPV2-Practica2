@@ -75,6 +75,9 @@
     <ClCompile Include="src\systems\FoodSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\ImmunitySystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\json\JSON.h">
@@ -207,6 +210,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\FoodSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ImmunitySystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
