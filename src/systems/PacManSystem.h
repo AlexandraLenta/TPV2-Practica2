@@ -13,7 +13,7 @@ public:
 	virtual ~PacManSystem();
 	void initSystem() override;
 	void update() override;
-	void receive(const Message& m);
+	void recieve(const Message& m);
 private:
 	Transform *_pmTR;
 };

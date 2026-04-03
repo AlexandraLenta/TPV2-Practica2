@@ -113,7 +113,7 @@ void PacManSystem::update() {
 
 }
 
-void PacManSystem::receive(const Message& m) {
+void PacManSystem::recieve(const Message& m) {
 	switch (m.id) 
 	{
 	case _m_ROUND_START:

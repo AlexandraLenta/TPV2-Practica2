@@ -45,6 +45,14 @@ public:
 			}
 	}
 
+	void setAlive(bool alive) {
+		_alive = alive;
+	}
+
+	bool isAlive() const {
+		return _alive;
+	}
+
 private:
 
 	// the field currCmps_ can be removed, and instead we can traverse cmps_
