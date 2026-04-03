@@ -38,5 +38,9 @@ struct Message {
 			unsigned int n;
 		} create_stars_data;
 
+		struct {
+			bool isMagic;
+			bool isActive;
+		} pacman_food_collision;
 	};
 };

@@ -106,8 +106,15 @@ void FoodSystem::update() {
 				_pacmanImmune = true;
 				_immunityTimer = 10.0f;
 
-				Message m;
+				/*Message m;
 				m.id = _m_IMMUNITY_START;
+				_mngr->send(m);*/
+
+				Message m;
+				m.id = _m_PACMAN_FOOD_COLLISION;
+				m.pacman_food_collision.isMagic = it->isMagic;
+				m.pacman_food_collision.isActive = it->isActive;
+
 				_mngr->send(m);
 			}
 
@@ -120,19 +127,20 @@ void FoodSystem::update() {
 		++it;
 	}
 
-	//temporizador de inmunidad
-	if (_pacmanImmune) {
+	////temporizador de inmunidad
+	//if (_pacmanImmune) {
 
-		_immunityTimer -= sdlutils().deltaTime();
+	//	_immunityTimer -= sdlutils().deltaTime();
 
-		if (_immunityTimer <= 0.0f) {
-			_pacmanImmune = false;
+	//	if (_immunityTimer <= 0.0f) {
+	//		_pacmanImmune = false;
 
-			Message m;
-			m.id = _m_IMMUNITY_END;
-			_mngr->send(m);
-		}
-	}
+	//		Message m;
+	//		m.id = _m_IMMUNITY_END;
+	//		_mngr->send(m);
+	//	}
+	//}
+
 	if (_foods.empty()) {
 		Message m;
 		m.id = _m_GAME_OVER;
