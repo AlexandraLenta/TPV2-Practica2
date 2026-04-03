@@ -39,17 +39,22 @@ void FoodSystem::initSystem() {
 
 			bool isMagic = (rand() % 100) < 10;
 
-			if (isMagic)
-				_mngr->addComponent<Image>(e, &sdlutils().images().at("cherry"));
-			else
-				_mngr->addComponent<Image>(e, &sdlutils().images().at("cherry"));
-
 			Food f;
 			f.e = e;
 			f.isMagic = isMagic;
 			f.isActive = false;
 			f.timer = 0.0f;
-			f.nextChange = 10 + rand() % 11;
+			//f.nextChange = 10 + rand() % 11;
+
+			if (isMagic) {
+				f.nextChange = 10 + rand() % 11; // n 10 - 20 s
+				_mngr->addComponent<Image>(e, &sdlutils().images().at("cherry"));// comienza en estado cereza
+			}
+			else{
+				f.nextChange = 0.0f; // No aplica
+				_mngr->addComponent<Image>(e, &sdlutils().images().at("cherry"));
+			}
+
 
 			_foods.push_back(f);
 		}
@@ -61,26 +66,29 @@ void FoodSystem::update() {
 
 		if (!f.isMagic) continue;
 
-		f.timer += sdlutils().deltaTime() / 1000.0f;
+		f.timer += sdlutils().deltaTime();
 
 		if (f.timer >= f.nextChange) {
 
 			f.timer = 0.0f;
 
 			if (!f.isActive) {
+				// cambia a estado milagro
 				f.isActive = true;
-				f.nextChange = 1 + rand() % 5;
+				f.nextChange = 1 + rand() % 5;// m 1-5 s
 
 			}
 			else {
+				// Vuelve a estado normal
 				f.isActive = false;
-				f.nextChange = 10 + rand() % 11;
+				f.nextChange = 10 + rand() % 11;// n 10-20 s
 			}
 		}
 	}
 
+	// Comprobar colisiones con pacman
 	auto pmTr = _mngr->getComponent<Transform>(_pacman);
-
+	if (!pmTr) return;
 	for (auto it = _foods.begin(); it != _foods.end(); ) {
 
 		auto tr = _mngr->getComponent<Transform>(it->e);
@@ -92,6 +100,7 @@ void FoodSystem::update() {
 			tr->_pos.getY() + tr->_height > pmTr->_pos.getY();
 
 		if (coll) {
+			// Fruta milagrosa activa y pacman no esta inmune ya
 			if (it->isMagic && it->isActive && !_pacmanImmune) {
 
 				_pacmanImmune = true;
@@ -111,9 +120,10 @@ void FoodSystem::update() {
 		++it;
 	}
 
+	//temporizador de inmunidad
 	if (_pacmanImmune) {
 
-		_immunityTimer -= sdlutils().deltaTime() / 1000.0f;
+		_immunityTimer -= sdlutils().deltaTime();
 
 		if (_immunityTimer <= 0.0f) {
 			_pacmanImmune = false;
@@ -130,3 +140,23 @@ void FoodSystem::update() {
 	}
 }
 
+void FoodSystem::recieve(const Message& m) {
+
+	switch (m.id) 
+	{
+
+	case _m_NEW_GAME:
+		for (auto& f : _foods)
+			f.e->setAlive(false);
+
+		_foods.clear();
+		initSystem();
+		break;
+
+	case _m_ROUND_START:
+		for (auto& f : _foods) {
+			f.timer = 0;
+		}
+		break;
+	}
+}

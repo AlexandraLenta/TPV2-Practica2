@@ -18,7 +18,7 @@ public:
 private:
 	struct Food {ecs::entity_t e;bool isMagic;bool isActive; // estado milagro
 		float timer;
-		float nextChange;
+		float nextChange; //n o m segun el estado
 	};
 
 	std::vector<Food> _foods;

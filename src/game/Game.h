@@ -6,12 +6,18 @@
 
 #include "../ecs/ecs.h"
 
-class Game {
+class Game :public Singleton<Game> {
+	friend Singleton<Game>;
 public:
 	Game();
 	virtual ~Game();
 	void init();
 	void start();
+
+	ecs::EntityManager* getMngr() {
+		return _mngr;
+	}
+
 private:
 	ecs::EntityManager *_mngr;
 	ecs::System *_pacmanSys;
