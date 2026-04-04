@@ -3,7 +3,7 @@
 #pragma once
 
 #include <vector>
-
+#include "../utils/Singleton.h"
 #include "../ecs/ecs.h"
 
 class Game :public Singleton<Game> {
