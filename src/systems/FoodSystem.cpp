@@ -8,7 +8,7 @@
 #include "../sdlutils/SDLUtils.h"
 #include "GameCtrlSystem.h"
 
-FoodSystem::FoodSystem() {
+FoodSystem::FoodSystem() : _size(30.0f),_spacing(80.0f) {
 
 }
 
@@ -17,10 +17,6 @@ FoodSystem::~FoodSystem() {
 }
 
 void FoodSystem::initSystem() {
-
-	_pacman = _mngr->getHandler(ecs::hdlr::PACMAN);
-	_pacmanImmune = false;
-	_immunityTimer = 0.0f;
 
 	int rows = 5;
 	int cols = 8;
@@ -46,15 +42,13 @@ void FoodSystem::initSystem() {
 			f.timer = 0.0f;
 			//f.nextChange = 10 + rand() % 11;
 
-			if (isMagic) {
-				f.nextChange = 10 + rand() % 11; // n 10 - 20 s
-				_mngr->addComponent<Image>(e, &sdlutils().images().at("cherry"));// comienza en estado cereza
-			}
-			else{
-				f.nextChange = 0.0f; // No aplica
-				_mngr->addComponent<Image>(e, &sdlutils().images().at("cherry"));
-			}
+			if (isMagic)
+				f.nextChange = 10 + rand() % 11;
+			else
+				f.nextChange = 0;
 
+			auto img = _mngr->addComponent<Image>(e);
+			img->_tex = &sdlutils().images().at("cherry");
 
 			_foods.push_back(f);
 		}
@@ -62,33 +56,57 @@ void FoodSystem::initSystem() {
 }
 
 void FoodSystem::update() {
+
+	updateMagicState();
+	checkCollisions();
+
+	if (_foods.empty()) {
+		Message m;
+		m.id = _m_GAME_OVER;
+		_mngr->send(m);
+	}
+}
+
+void FoodSystem::updateMagicState() {
+
+	float dt = sdlutils().deltaTime() / 1000.0f;
+
 	for (auto& f : _foods) {
 
 		if (!f.isMagic) continue;
 
-		f.timer += sdlutils().deltaTime();
+		f.timer += dt;
 
 		if (f.timer >= f.nextChange) {
 
 			f.timer = 0.0f;
 
+			auto img = _mngr->getComponent<Image>(f.e);
+
 			if (!f.isActive) {
-				// cambia a estado milagro
 				f.isActive = true;
-				f.nextChange = 1 + rand() % 5;// m 1-5 s
+				f.nextChange = 1 + rand() % 5;
+
+				if (img)
+					img->_tex = &sdlutils().images().at("pear");
 
 			}
 			else {
-				// Vuelve a estado normal
 				f.isActive = false;
-				f.nextChange = 10 + rand() % 11;// n 10-20 s
+				f.nextChange = 10 + rand() % 11;
+
+				if (img)
+					img->_tex = &sdlutils().images().at("cherry");
 			}
 		}
 	}
+}
 
-	// Comprobar colisiones con pacman
-	auto pmTr = _mngr->getComponent<Transform>(_pacman);
-	if (!pmTr) return;
+void FoodSystem::checkCollisions() {
+
+	auto pacman = _mngr->getHandler(ecs::hdlr::PACMAN);
+	auto pmTr = _mngr->getComponent<Transform>(pacman);
+
 	for (auto it = _foods.begin(); it != _foods.end(); ) {
 
 		auto tr = _mngr->getComponent<Transform>(it->e);
@@ -100,51 +118,20 @@ void FoodSystem::update() {
 			tr->_pos.getY() + tr->_height > pmTr->_pos.getY();
 
 		if (coll) {
-			// Fruta milagrosa activa y pacman no esta inmune ya
-			if (it->isMagic && it->isActive && !_pacmanImmune) {
 
-				_pacmanImmune = true;
-				_immunityTimer = 10.0f;
+			Message m;
+			m.id = _m_PACMAN_FOOD_COLLISION;
+			m.pacman_food_collision.isMagic = it->isMagic;
+			m.pacman_food_collision.isActive = it->isActive;
 
-				/*Message m;
-				m.id = _m_IMMUNITY_START;
-				_mngr->send(m);*/
-
-				Message m;
-				m.id = _m_PACMAN_FOOD_COLLISION;
-				m.pacman_food_collision.isMagic = it->isMagic;
-				m.pacman_food_collision.isActive = it->isActive;
-
-				_mngr->send(m);
-			}
+			_mngr->send(m);
 
 			it->e->setAlive(false);
 			it = _foods.erase(it);
-
-			continue;
 		}
-
-		++it;
-	}
-
-	////temporizador de inmunidad
-	//if (_pacmanImmune) {
-
-	//	_immunityTimer -= sdlutils().deltaTime();
-
-	//	if (_immunityTimer <= 0.0f) {
-	//		_pacmanImmune = false;
-
-	//		Message m;
-	//		m.id = _m_IMMUNITY_END;
-	//		_mngr->send(m);
-	//	}
-	//}
-
-	if (_foods.empty()) {
-		Message m;
-		m.id = _m_GAME_OVER;
-		_mngr->send(m);
+		else {
+			++it;
+		}
 	}
 }
 

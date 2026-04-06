@@ -21,11 +21,16 @@ private:
 		float nextChange; //n o m segun el estado
 	};
 
+	void updateMagicState();
+	void checkCollisions();
+	void removeFood(ecs::entity_t e);
+	void clearAll();
+
 	std::vector<Food> _foods;
 
 	ecs::entity_t _pacman;
 
-	bool _pacmanImmune;
-	float _immunityTimer;
+	float _size;
+	float _spacing;
 };
 

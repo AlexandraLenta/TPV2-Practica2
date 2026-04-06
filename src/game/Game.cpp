@@ -16,12 +16,15 @@
 using ecs::EntityManager;
 
 Game::Game() :
-		_mngr(), //
-		_pacmanSys(), //
-		_gameCtrlSys(), //
-		_startsSys(), //
-		_renderSys(), //
-		_collisionSys() {
+		_mngr(nullptr), //
+		_pacmanSys(nullptr), //
+		_gameCtrlSys(nullptr), //
+		_ghostSys(nullptr), //
+		_foodSys(nullptr), //
+		_immunitySys(nullptr), //
+		_startsSys(nullptr), //
+		_renderSys(nullptr), //
+		_collisionSys(nullptr) {
 
 }
 

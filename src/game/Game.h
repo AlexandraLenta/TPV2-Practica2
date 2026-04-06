@@ -5,6 +5,14 @@
 #include <vector>
 #include "../utils/Singleton.h"
 #include "../ecs/ecs.h"
+#include "../ecs/EntityManager.h"
+#include "../systems/CollisionsSystem.h"
+#include "../systems/GameCtrlSystem.h"
+#include "../systems/PacManSystem.h"
+#include "../systems/RenderSystem.h"
+#include "../systems/GhostSystem.h"
+#include "../systems/FoodSystem.h"
+#include "../systems/ImmunitySystem.h"
 
 class Game :public Singleton<Game> {
 	friend Singleton<Game>;
@@ -14,16 +22,21 @@ public:
 	void init();
 	void start();
 
-	ecs::EntityManager* getMngr() {
-		return _mngr;
-	}
+
 
 private:
 	ecs::EntityManager *_mngr;
-	ecs::System *_pacmanSys;
-	ecs::System *_gameCtrlSys;
-	ecs::System *_startsSys;
-	ecs::System *_renderSys;
-	ecs::System *_collisionSys;
+
+	PacManSystem* _pacmanSys;
+	GameCtrlSystem* _gameCtrlSys;
+	GhostSystem* _ghostSys;
+	FoodSystem* _foodSys;
+	ImmunitySystem* _immunitySys;
+	StarsSystem* _startsSys;
+	RenderSystem* _renderSys;
+	CollisionsSystem* _collisionSys;
+
+
+
 };
 
