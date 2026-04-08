@@ -46,7 +46,6 @@ void RenderSystem::drawPacMan() {
 	auto tr = _mngr->getComponent<Transform>(e);
 	auto tex = _mngr->getComponent<Image>(e)->_tex;
 
-	std::cout << _pacmanRender.frame << '\n';
 	SDL_FRect srcRect = { _pacmanRender.srcRect.x + _pacmanRender.frame * _pacmanRender.srcRect.w, _pacmanRender.srcRect.y, _pacmanRender.srcRect.w, _pacmanRender.srcRect.h };
 	draw(tr, tex, srcRect);
 
