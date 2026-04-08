@@ -32,7 +32,6 @@ private:
 	GhostSystem* _ghostSys;
 	FoodSystem* _foodSys;
 	ImmunitySystem* _immunitySys;
-	StarsSystem* _startsSys;
 	RenderSystem* _renderSys;
 	CollisionsSystem* _collisionSys;
 

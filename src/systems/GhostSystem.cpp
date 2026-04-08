@@ -3,19 +3,10 @@
 #include <algorithm>
 #include "../components/Image.h"
 #include "../components/Points.h"
-#include "../components/StarMotion.h"
 #include "../components/Transform.h"
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
 #include "GameCtrlSystem.h"
-
-GhostSystem::GhostSystem() {
-
-}
-
-GhostSystem::~GhostSystem() {
-
-}
 
 void GhostSystem::initSystem() {
 	_pacman = _mngr->getHandler(ecs::hdlr::PACMAN);
@@ -27,15 +18,19 @@ void GhostSystem::initSystem() {
 void GhostSystem::update() {
 	_spawnTimer += sdlutils().deltaTime();
 
-	if (_spawnTimer >= 5000.0f) {
-		_spawnTimer = 0.0f;
+	if (_spawnTimer >= SPAWN_INTERVAL) {
+		_spawnTimer = 0.0f; // restart timer
 
-		if (_ghosts.size() < 10 && !_pacmanImmune) {
-			auto g = _mngr->addEntity();
+		if (_ghosts.size() < 10 && !_pacmanImmune) { // check conditions: less than 10 ghosts and pacman not immune
+			auto g = _mngr->addEntity(); // create the entity
 
-			// esquina aleatoria
+			// random corner
+			// 0: up left           0 ____ 1
+			// 1: up right           |    |
+			// 2: down right       3 |____| 2
+			// 3: down left
 			int corner = rand() % 4;
-			float x = (corner == 0 || corner == 2) ? 0 : sdlutils().width() - 50;
+			float x = (corner == 0 || corner == 3) ? 0 : sdlutils().width() - 50; 
 			float y = (corner == 0 || corner == 1) ? 0 : sdlutils().height() - 50;
 
 			_mngr->addComponent<Transform>(g)->init(Vector2D(x, y), Vector2D(0, 0), 50, 50, 0);

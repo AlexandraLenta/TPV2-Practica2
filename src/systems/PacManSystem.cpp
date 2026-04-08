@@ -22,7 +22,7 @@ void PacManSystem::initSystem() {
 	_mngr->setHandler(ecs::hdlr::PACMAN, pacman);
 
 	_pmTR = _mngr->addComponent<Transform>(pacman);
-	auto s = 50.0f;
+	auto s = 75.0f;
 	auto x = (sdlutils().width() - s) / 2.0f;
 	auto y = (sdlutils().height() - s) / 2.0f;
 	_pmTR->init(Vector2D(x, y), Vector2D(), s, s, 0.0f);
@@ -36,14 +36,6 @@ void PacManSystem::update() {
 	if (ihldr.keyDownEvent()) {
 
 		if (ihldr.isKeyDown(SDL_SCANCODE_RIGHT)) { // rotate right
-			//_pmTR->_rot = _pmTR->_rot + 5.0f;
-
-			// also rotate the PacMan so it looks in the same
-			// direction where it moves
-			//
-
-			//_pmTR->_vel = _pmTR->_vel.rotate(5.0f);
-
 			_pmTR->_rot = _pmTR->_rot + 90.0f;
 			_pmTR->_vel = _pmTR->_vel.rotate(90.0f);
 
@@ -68,8 +60,6 @@ void PacManSystem::update() {
 			// '.rotate(rot)' for the case in which the current speed is
 			// 0, so we rotate it to the same direction where the PacMan
 			// is looking
-			//
-			//_pmTR->_vel = Vector2D(0, -speed).rotate(_pmTR->_rot);
 
 			_pmTR->_vel = Vector2D(0.0f, -3.0f).rotate(_pmTR->_rot);
 
@@ -110,7 +100,6 @@ void PacManSystem::update() {
 		_pmTR->_pos.setY(sdlutils().height() - _pmTR->_height);
 		_pmTR->_vel.set(0.0f, 0.0f);
 	}
-
 }
 
 void PacManSystem::recieve(const Message& m) {

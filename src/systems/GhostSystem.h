@@ -6,8 +6,8 @@
 class GhostSystem : public ecs::System
 {
 public:
-	GhostSystem();
-	virtual ~GhostSystem();
+	GhostSystem() {};
+	virtual ~GhostSystem() {};
 
 	void initSystem() override;
 	void update() override;
@@ -20,5 +20,7 @@ private:
 
 	float _spawnTimer;
 	bool _pacmanImmune;
+
+	const float SPAWN_INTERVAL = 5000.0f;
 };
 

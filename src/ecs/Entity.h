@@ -53,6 +53,10 @@ public:
 		return _alive;
 	}
 
+	ecs::grpId_t groupId() {
+		return _gId;
+	}
+
 private:
 
 	// the field currCmps_ can be removed, and instead we can traverse cmps_

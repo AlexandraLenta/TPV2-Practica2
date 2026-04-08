@@ -9,7 +9,6 @@
 #include "../systems/GameCtrlSystem.h"
 #include "../systems/PacManSystem.h"
 #include "../systems/RenderSystem.h"
-#include "../systems/StarsSystem.h"
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
@@ -22,10 +21,8 @@ Game::Game() :
 		_ghostSys(nullptr), //
 		_foodSys(nullptr), //
 		_immunitySys(nullptr), //
-		_startsSys(nullptr), //
 		_renderSys(nullptr), //
 		_collisionSys(nullptr) {
-
 }
 
 Game::~Game() {
@@ -64,7 +61,6 @@ void Game::init() {
 
 	// add the systems
 	_pacmanSys = _mngr->addSystem<PacManSystem>();
-	_startsSys = _mngr->addSystem<StarsSystem>();
 	_gameCtrlSys = _mngr->addSystem<GameCtrlSystem>();
 	_renderSys = _mngr->addSystem<RenderSystem>();
 	_collisionSys = _mngr->addSystem<CollisionsSystem>();
@@ -89,7 +85,6 @@ void Game::start() {
 		}
 
 		_pacmanSys->update();
-		_startsSys->update();
 		_gameCtrlSys->update();
 		_collisionSys->update();
 

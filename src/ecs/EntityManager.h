@@ -40,24 +40,9 @@ public:
 		auto e = new Entity(gId);
 		e->_alive = true;
 
-		// add the entity 'e' to list of entities of the given group
+		// add the entity 'e' to temporary list of entities. flush() will be called to add them to the entity list at the end of the frame.
 		//
-		// IMPORTANT NOTE:
-		//
-		// Currently we immediately add the entity to the list of entities,
-		// so we will actually see them in this 'frame' if we traverse the list of
-		// entities afterwards!
-		//
-		// A better solution would be to add them to an auxiliary list, and
-		// define a method 'flush()' that moves them from the auxiliary list
-		// to the corresponding list of entities.
-		//
-		// We will have to call 'flush()' in each iteration of the
-		// main loop. This way we guarantee that entities that are added in one
-		// 'frame' they will appear only in the next 'frame' -- I leave it as an
-		// exercise for you ... it could be incorporated in 'refresh' as well.
-		//
-		_entsByGroup[gId].push_back(e);
+		_entsToAdd.push_back(e);
 
 		// return it to the caller
 		//
@@ -291,10 +276,18 @@ public:
 
 	void refresh();
 
+	void flush() {
+		for (auto& ent : _entsToAdd) {
+			_entsByGroup[ent->groupId()].push_back(ent);
+		}
+		_entsToAdd.clear();
+	}
+
 private:
 
 	std::array<entity_t, maxHandlerId> _hdlrs;
 	std::array<std::vector<entity_t>, maxGroupId> _entsByGroup;
+	std::vector<Entity*> _entsToAdd;
 	std::array<System*, maxSystemId> _sys;
 
 	std::vector<Message> _msgs;

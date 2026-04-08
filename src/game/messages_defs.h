@@ -4,23 +4,16 @@
 #include <cstdint>
 #include "../ecs/ecs.h"
 
-using msgId_type = uint8_t;
-enum msgId : msgId_type {
-	_m_STAR_EATEN, //
-	_m_CREATE_STARS,
-	_m_NEW_GAME,
-	_m_ROUND_START,
-	_m_ROUND_OVER,
-	_m_GAME_OVER,
-	_m_PACMAN_FOOD_COLLISION,
-	_m_PACMAN_GHOST_COLLISION,
-	_m_IMMUNITY_START,
-	_m_IMMUNITY_END
+using msgId_t = uint8_t;
+enum msgId : msgId_t {
+	_m_NEW_GAME, _m_ROUND_START, _m_ROUND_OVER, _m_GAME_OVER,
+	_m_PACMAN_FOOD_COLLISION, _m_PACMAN_GHOST_COLLISION,
+	_m_IMMUNITY_START, _m_IMMUNITY_END
 };
 
 
 struct Message {
-	msgId_type id;
+	msgId id;
 
 	// if we use union we save memory, but then use only primitive
 	// types, otherwise you will need to define constructors almost
@@ -28,15 +21,15 @@ struct Message {
 
 	union {
 
-		// _m_STAR_EATEN
+		// _m_PACMAN_FOOD_COLLISION
 		struct {
 			ecs::entity_t e;
-		} star_eaten_data;
+		} food_collision_data;
 
-		// _m_CREATE_STARS
+		// _m_PACMAN_GHOST_COLLISION
 		struct {
-			unsigned int n;
-		} create_stars_data;
+			ecs::entity_t e;
+		} ghost_collision_data;
 
 		struct {
 			bool isMagic;

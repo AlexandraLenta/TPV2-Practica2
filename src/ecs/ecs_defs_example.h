@@ -19,8 +19,8 @@
 // Groups list - must have at least one element
 //
 #define _GRPS_LIST_ \
-	STAR, \
-	ASTEROID
+	GHOSTS, \
+	FRUIT
 
 // Handlers list - must have at least one element
 //
