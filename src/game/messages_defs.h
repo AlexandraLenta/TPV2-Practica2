@@ -3,6 +3,7 @@
 #pragma once
 #include <cstdint>
 #include "../ecs/ecs.h"
+#include "../systems/FoodSystem.h"
 
 using msgId_t = uint8_t;
 enum msgId : msgId_t {
@@ -20,10 +21,9 @@ struct Message {
 	// every where.
 
 	union {
-
 		// _m_PACMAN_FOOD_COLLISION
 		struct {
-			ecs::entity_t e;
+			FoodSystem::Food f;
 		} food_collision_data;
 
 		// _m_PACMAN_GHOST_COLLISION
@@ -32,8 +32,7 @@ struct Message {
 		} ghost_collision_data;
 
 		struct {
-			bool isMagic;
-			bool isActive;
-		} pacman_food_collision;
+			bool hasWon;
+		} game_over_data;
 	};
 };

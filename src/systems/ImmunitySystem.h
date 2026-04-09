@@ -13,7 +13,8 @@ public:
 	void recieve(const Message& m) override;
 private:
 	bool _active;
-	float _timer;
+	float _lastTime;
 
+	const float IMMUNITY_TIME = 10.0f;
 };
 

@@ -5,7 +5,7 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
 #include "GameCtrlSystem.h"
-ImmunitySystem::ImmunitySystem() :_active(false),_timer(0.0f) {
+ImmunitySystem::ImmunitySystem() :_active(false) {
 
 }
 ImmunitySystem::~ImmunitySystem() {
@@ -16,11 +16,10 @@ void ImmunitySystem::initSystem() {
 
 }
 void ImmunitySystem::update() {
+	auto& vT = sdlutils().virtualTimer();
 
 	if (_active) {
-		_timer -= sdlutils().deltaTime();
-
-		if (_timer <= 0.0f) {
+		if (vT.currTime() - _lastTime) {
 			_active = false;
 
 			Message m;
@@ -33,21 +32,14 @@ void ImmunitySystem::update() {
 void ImmunitySystem::recieve(const Message& m) {
 
 	switch (m.id) {
+		case _m_PACMAN_FOOD_COLLISION:
+			if (m.food_collision_data.f.isMagic && m.food_collision_data.f.isActive && !_active) {
+				_active = true;
+				_lastTime = sdlutils().virtualTimer().currTime();
 
-	case _m_PACMAN_FOOD_COLLISION:
-		if (m.pacman_food_collision.isMagic &&m.pacman_food_collision.isActive &&!_active) {
-
-			_active = true;
-			_timer = 10.0f;
-
-			Message msg;
-			msg.id = _m_IMMUNITY_START;
-			_mngr->send(msg);
-		}
-		break;
-	case _m_NEW_GAME:
-	case _m_GAME_OVER:
-		_active = false;
-		break;
+				Message msg;
+				msg.id = _m_IMMUNITY_START;
+				_mngr->send(msg);
+			}
 	}
 }

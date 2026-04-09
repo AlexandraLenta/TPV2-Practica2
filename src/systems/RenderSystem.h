@@ -26,9 +26,15 @@ private:
 		SDL_FRect srcRect;
 	} _pacmanRender, _ghostRender;
 
+	const float SPRITE_SRC_SIZE = 128;
+
 	const float PACMAN_SRC_POS = 0;
+
 	const float NORMAL_GHOST_SRC_Y = 512;
 	const float BLUE_GHOST_SRC_Y = 768;
-	const float SPRITE_SRC_SIZE = 128;
+	
+	const int FRUIT_ROW = 1;
+	const int FRUIT_NORMAL_COL = 4;
+	const int FRUIT_MAGIC_COL = 7;
 };
 
