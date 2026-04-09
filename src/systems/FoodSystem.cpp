@@ -16,15 +16,15 @@ FoodSystem::~FoodSystem() {
 }
 
 void FoodSystem::initSystem() {
-	int rows = sdlutils().height() / FOOD_SIZE;
-	int cols = sdlutils().width() / FOOD_SIZE;
+	int rows = 6;
+	int cols = 8;
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < cols; j++) {
-			auto e = _mngr->addEntity();
+			auto e = _mngr->addEntity(ecs::grp::FRUIT);
 
-			float x = GRID_SPACING + j * FOOD_SIZE;
-			float y = GRID_SPACING + i * FOOD_SIZE;
+			float x = MARGIN + j * (FOOD_SIZE + GRID_SPACING);
+			float y = MARGIN + i * (FOOD_SIZE + GRID_SPACING);
 
 			auto tr = _mngr->addComponent<Transform>(e);
 			tr->init(Vector2D(x, y), Vector2D(), FOOD_SIZE, FOOD_SIZE, 0);
@@ -39,12 +39,13 @@ void FoodSystem::initSystem() {
 			f.activeTime = 0.0f;
 
 			if (isMagic)
-				f.activeFrecuency = 10 + rand() % 11;
+				f.activeFrecuency = 10000 + rand() % 11000;
 			else
 				f.activeFrecuency = 0;
 
-			auto img = _mngr->addComponent<Image>(e);
-			img->_tex = &sdlutils().images().at("pacman");
+			std::cout << f.activeFrecuency << '\n';
+
+			auto img = _mngr->addComponent<Image>(e, &sdlutils().images().at("pacman"), FRUIT_ROW, FRUIT_NORMAL_COL);
 
 			_foods.push_back(f);
 		}
@@ -74,14 +75,16 @@ void FoodSystem::updateMagicState() {
 		if (!f.isActive) {
 			if (vT.currTime() - f.lastChangeTime >= f.activeFrecuency) {
 				f.isActive = true;
-				f.activeTime = 1 + rand() % 5;
+				f.activeTime = (1 + rand() % 5) * 1000.0f;
 				f.lastChangeTime = vT.currTime();
+				auto img = _mngr->getComponent<Image>(f.e)->_texCol = FRUIT_MAGIC_COL;
 			}
 		}
 		else {
 			if (vT.currTime() - f.lastChangeTime >= f.activeTime) {
 				f.isActive = false;
 				f.lastChangeTime = vT.currTime();
+				auto img = _mngr->getComponent<Image>(f.e)->_texCol = FRUIT_NORMAL_COL;
 			}
 		}
 	}

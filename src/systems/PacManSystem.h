@@ -15,6 +15,13 @@ public:
 	void update() override;
 	void recieve(const Message& m);
 private:
+	ecs::entity_t _pacman;
 	Transform *_pmTR;
+	float _lastFrameChange;
+	
+	const float FRAME_CHANGE = 250.0f;
+
+	const float PACMAN_SRC_ROW = 0;
+	const float PACMAN_SRC_COL = 0;
 };
 

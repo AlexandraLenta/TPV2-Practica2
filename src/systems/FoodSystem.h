@@ -30,7 +30,11 @@ private:
 
 	ecs::entity_t _pacman;
 
-	const float FOOD_SIZE = 50.0f;
-	const float GRID_SPACING = 75.0f;
-};
+	const float FOOD_SIZE = 25.0f;
+	const float GRID_SPACING = 75;
+	const float MARGIN = 35.0f;
 
+	const int FRUIT_ROW = 1;
+	const int FRUIT_NORMAL_COL = 4;
+	const int FRUIT_MAGIC_COL = 7;
+};

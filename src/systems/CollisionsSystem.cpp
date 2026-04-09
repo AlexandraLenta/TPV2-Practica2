@@ -25,34 +25,25 @@ void CollisionsSystem::update() {
 	//
 	auto pm = _mngr->getHandler(ecs::hdlr::PACMAN);
 	auto pTR = _mngr->getComponent<Transform>(pm);
+
 	auto ghostList = _mngr->getEntities(ecs::grp::GHOSTS);
 
-	//// ghost
-	//for (auto it = ghostList.begin(); it != ghostList.end(); ) {
+	// pacman <-> ghosts
+	for (auto it = ghostList.begin(); it != ghostList.end(); it++) {
+		auto tr = _mngr->getComponent<Transform>(*it);
 
-	//	auto tr = _mngr->getComponent<Transform>(*it);
-	//	auto pmTr = _mngr->getComponent<Transform>(pm);
+		if (_mngr->isAlive(*it)) {
+			if (Collisions::collides(pTR->_pos, pTR->_width, pTR->_height, tr->_pos, tr->_width, tr->_height)) {
+				Message m;
+				m.id = _m_PACMAN_GHOST_COLLISION;
+				m.ghost_collision_data.e = *it;
+				_mngr->send(m);
+			}
+		}
+	}
+}
 
-	//	bool coll = tr->_pos.getX() < pmTr->_pos.getX() + pmTr->_width && tr->_pos.getX() + tr->_width > pmTr->_pos.getX() &&
-	//		tr->_pos.getY() < pmTr->_pos.getY() + pmTr->_height && tr->_pos.getY() + tr->_height > pmTr->_pos.getY();
-
-	//	if (coll) {
-	//		if (_pacmanImmune) {
-	//			_mngr->setAlive(*it, false);
-	//			it = ghostList.erase(it);
-	//			continue;
-	//		}
-	//		else {
-	//			Message m;
-	//			m.id = _m_ROUND_OVER;
-	//			_mngr->send(m);
-	//		}
-	//	}
-
-	//	++it;
-	//}
-
-	//// food
+	// food
 	//for (auto it = _foods.begin(); it != _foods.end(); ) {
 
 	//	auto tr = _mngr->getComponent<Transform>(it->e);
@@ -79,6 +70,4 @@ void CollisionsSystem::update() {
 	//		++it;
 	//	}
 	//}
-
-}
 

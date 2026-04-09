@@ -34,8 +34,5 @@ private:
 	ImmunitySystem* _immunitySys;
 	RenderSystem* _renderSys;
 	CollisionsSystem* _collisionSys;
-
-
-
 };
 

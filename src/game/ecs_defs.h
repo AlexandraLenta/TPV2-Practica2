@@ -6,12 +6,14 @@
 //
 struct Transform;
 struct Image;
+struct FramedImage;
 struct Points;
 
 #define _CMPS_LIST_ \
 	Transform, \
 	Image, \
-	Points
+	Points, \
+	FramedImage
 
 // Groups list - must have at least one element
 //

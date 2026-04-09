@@ -18,12 +18,6 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::initSystem() {
-	_pacmanRender.srcRect = { 0, PACMAN_SRC_ROW * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
-
-	_ghostRender.srcRect = { 0, NORMAL_GHOST_SRC_ROW * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
-
-	_foodRender.frame = 0;
-	_foodRender.srcRect = { FRUIT_NORMAL_COL * SPRITE_SRC_SIZE, FRUIT_ROW * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
 }
 
 void RenderSystem::update() {
@@ -36,9 +30,12 @@ void RenderSystem::update() {
 void RenderSystem::drawPacMan() {
 	auto e = _mngr->getHandler(ecs::hdlr::PACMAN);
 	auto tr = _mngr->getComponent<Transform>(e);
-	auto tex = _mngr->getComponent<Image>(e)->_tex;
+	auto img = _mngr->getComponent<FramedImage>(e);
+	auto tex = img->_tex;
 
-	SDL_FRect srcRect = { _pacmanRender.srcRect.x + _pacmanRender.frame * _pacmanRender.srcRect.w, _pacmanRender.srcRect.y, _pacmanRender.srcRect.w, _pacmanRender.srcRect.h };
+	SDL_FRect src = { 0, img->_texRow * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
+
+	SDL_FRect srcRect = { src.x + img->_currFrame * src.w, src.y, src.w, src.h };
 	draw(tr, tex, srcRect);
 }
 
@@ -61,13 +58,16 @@ void RenderSystem::drawMsgs() {
 
 void
 RenderSystem::drawGhosts() {
-	auto ghosts= _mngr->getEntities(ecs::grp::GHOSTS);
+	auto ghosts = _mngr->getEntities(ecs::grp::GHOSTS);
 	for (auto& g : ghosts) {
 
 		auto tr = _mngr->getComponent<Transform>(g);
-		auto tex = _mngr->getComponent<Image>(g)->_tex;
+		auto img = _mngr->getComponent<FramedImage>(g);
+		auto tex = img->_tex;
 
-		SDL_FRect srcRect = { _ghostRender.srcRect.x + _ghostRender.frame * _ghostRender.srcRect.w, _ghostRender.srcRect.y, _ghostRender.srcRect.w, _ghostRender.srcRect.h };
+		SDL_FRect src = { 0, img->_texRow * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
+
+		SDL_FRect srcRect = { src.x + img->_currFrame * src.w, src.y, src.w, src.h };
 		draw(tr, tex, srcRect);
 	}
 }
@@ -77,9 +77,12 @@ RenderSystem::drawFood() {
 	auto food = _mngr->getEntities(ecs::grp::FRUIT);
 	for (auto& f : food) {
 		auto tr = _mngr->getComponent<Transform>(f);
-		auto tex = _mngr->getComponent<Image>(f)->_tex;
+		auto img = _mngr->getComponent<Image>(f);
+		auto tex = img->_tex;
 
-		SDL_FRect srcRect = { _foodRender.srcRect.x + _foodRender.frame * _foodRender.srcRect.w, _foodRender.srcRect.y, _foodRender.srcRect.w, _foodRender.srcRect.h };
+		SDL_FRect src = { img->_texCol * SPRITE_SRC_SIZE, img->_texRow * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
+
+		SDL_FRect srcRect = { src.x, src.y, src.w, src.h };
 		draw(tr, tex, srcRect);
 	}
 }
@@ -96,16 +99,4 @@ void RenderSystem::draw(Transform* tr, const Texture* tex, SDL_FRect src) {
 
 	assert(tex != nullptr);
 	tex->render(src, dest, tr->_rot);
-}
-
-void
-RenderSystem::recieve(const Message& m) {
-	switch (m.id) {
-	case _m_IMMUNITY_START:
-		_ghostRender.srcRect = { 0, BLUE_GHOST_SRC_ROW * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
-		break;
-	case _m_IMMUNITY_END:
-		_ghostRender.srcRect = { 0, NORMAL_GHOST_SRC_ROW * SPRITE_SRC_SIZE, SPRITE_SRC_SIZE, SPRITE_SRC_SIZE };
-		break;
-	}
 }

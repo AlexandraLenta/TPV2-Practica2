@@ -18,15 +18,17 @@ PacManSystem::~PacManSystem() {
 void PacManSystem::initSystem() {
 	// create the PacMan entity
 	//
-	auto pacman = _mngr->addEntity();
-	_mngr->setHandler(ecs::hdlr::PACMAN, pacman);
+	_pacman = _mngr->addEntity();
+	_mngr->setHandler(ecs::hdlr::PACMAN, _pacman);
 
-	_pmTR = _mngr->addComponent<Transform>(pacman);
+	_lastFrameChange = sdlutils().virtualTimer().currTime();
+
+	_pmTR = _mngr->addComponent<Transform>(_pacman);
 	auto s = 75.0f;
 	auto x = (sdlutils().width() - s) / 2.0f;
 	auto y = (sdlutils().height() - s) / 2.0f;
 	_pmTR->init(Vector2D(x, y), Vector2D(), s, s, 0.0f);
-	_mngr->addComponent<Image>(pacman, &sdlutils().images().at("pacman"));
+	_mngr->addComponent<FramedImage>(_pacman, &sdlutils().images().at("pacman"), 2, PACMAN_SRC_ROW, PACMAN_SRC_COL);
 }
 
 void PacManSystem::update() {
@@ -40,41 +42,13 @@ void PacManSystem::update() {
 			_pmTR->_vel = _pmTR->_vel.rotate(90.0f);
 
 		} else if (ihldr.isKeyDown(SDL_SCANCODE_LEFT)) { // rotate left
-			//_pmTR->_rot = _pmTR->_rot - 5.0f;
-
-			// also rotate the PacMan so it looks in the same
-			// direction where it moves
-			//
-			//_pmTR->_vel = _pmTR->_vel.rotate(-5.0f);
-
 			_pmTR->_rot = _pmTR->_rot - 90.0f;
 			_pmTR->_vel = _pmTR->_vel.rotate(-90.0f);
 
 		} else if (ihldr.isKeyDown(SDL_SCANCODE_UP)) { // increase speed
-
-			// add 1.0f to the speed (respecting the limit 3.0f). Recall
-			// that speed is the length of the velocity vector
-			//float speed = std::min(3.0f, _pmTR->_vel.magnitude() + 1.0f);
-
-			// change the length of velocity vecto to 'speed'. We need
-			// '.rotate(rot)' for the case in which the current speed is
-			// 0, so we rotate it to the same direction where the PacMan
-			// is looking
-
 			_pmTR->_vel = Vector2D(0.0f, -3.0f).rotate(_pmTR->_rot);
 
-		} else if (ihldr.isKeyDown(SDL_SCANCODE_DOWN)) { // decrease speed
-			// subtract 1.0f to the speed (respecting the limit 0.0f). Recall
-			// that speed is the length of the velocity vector
-			//float speed = std::max(0.0f, _pmTR->_vel.magnitude() - 1.0f);
-
-			// change the length of velocity vector to 'speed'. We need
-			// '.rotate(rot)' for the case in which the current speed is
-			// 0, so we rotate it to the same direction where the PacMan
-			// is looking
-			//
-			//_pmTR->_vel = Vector2D(0, -speed).rotate(_pmTR->_rot);
-
+		} else if (ihldr.isKeyDown(SDL_SCANCODE_DOWN)) { // stop
 			_pmTR->_vel = Vector2D(0.0f, 0.0f);
 		}
 
@@ -99,6 +73,17 @@ void PacManSystem::update() {
 	} else if (_pmTR->_pos.getY() + _pmTR->_height > sdlutils().height()) {
 		_pmTR->_pos.setY(sdlutils().height() - _pmTR->_height);
 		_pmTR->_vel.set(0.0f, 0.0f);
+	}
+
+	// advance frame
+	if (sdlutils().virtualTimer().currTime() - _lastFrameChange >= FRAME_CHANGE) {
+		_lastFrameChange = sdlutils().virtualTimer().currTime();
+		auto* pFI = _mngr->getComponent<FramedImage>(_pacman);
+		pFI->_currFrame++;
+
+		if (pFI->_currFrame >= pFI->_frames) {
+			pFI->_currFrame = 0;
+		}
 	}
 }
 

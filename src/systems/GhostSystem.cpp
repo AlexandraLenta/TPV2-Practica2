@@ -23,9 +23,9 @@ void GhostSystem::update() {
 	if (vT.currTime() - _previousSpawnTime >= SPAWN_INTERVAL) {
 		_previousSpawnTime = vT.currTime(); // restart timer
 
-		if (_ghosts.size() < 10 && !_pacmanImmune) { // check conditions: less than 10 ghosts and pacman not immune
-			auto g = _mngr->addEntity(); // create the entity
-
+		if (_ghosts.size() < 10 && !_pacmanImmune) { // check conditions: less than 10 ghosts and pacman not immune			
+			auto g = _mngr->addEntity(ecs::grp::GHOSTS); // create the entity
+			
 			// random corner
 			// 0: up left           0 ____ 1
 			// 1: up right           |    |
@@ -36,8 +36,9 @@ void GhostSystem::update() {
 			float y = (corner == 0 || corner == 1) ? 0 : sdlutils().height() - GHOST_SIZE;
 
 			_mngr->addComponent<Transform>(g)->init(Vector2D(x, y), Vector2D(0, 0), GHOST_SIZE, GHOST_SIZE, 0);
-			_mngr->addComponent<Image>(g, &sdlutils().images().at("pacman"));
+			_mngr->addComponent<FramedImage>(g, &sdlutils().images().at("pacman"), 8, NORMAL_GHOST_SRC_ROW, 0);
 			_ghosts.push_back(g);
+
 		}
 	}
 
@@ -80,6 +81,16 @@ void GhostSystem::recieve(const Message& m) {
 
 	case _m_IMMUNITY_END:
 		_pacmanImmune = false;
+		break;
+
+	case _m_PACMAN_GHOST_COLLISION:
+		if (_pacmanImmune) {
+			_mngr->setAlive(m.ghost_collision_data.e, false);
+			_ghosts.erase(std::find(_ghosts.begin(), _ghosts.end(), m.ghost_collision_data.e));
+		}
+		else {
+			std::cout << "pacman dead.\n";
+		}
 		break;
 	}
 }

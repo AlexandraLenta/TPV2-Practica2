@@ -79,9 +79,13 @@ void Game::start() {
 	bool exit = false;
 
 	auto &ihdlr = ih();
+	auto& vt = sdlutils().virtualTimer(); // virutal timer to be able to pause the timer in PausedState	
+
+	vt.resetTime(); // start counting from this instance
 
 	while (!exit) {
 		Uint32 startTime = sdlutils().currRealTime();
+		vt.regCurrTime(); // register current time so all objects use the same time
 
 		// refresh the input handler
 		ihdlr.refresh();
@@ -90,6 +94,8 @@ void Game::start() {
 			exit = true;
 			continue;
 		}
+
+		_mngr->flush();
 
 		_pacmanSys->update();
 		_foodSys->update();
