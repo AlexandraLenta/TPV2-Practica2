@@ -7,7 +7,7 @@
 #include "../sdlutils/SDLUtils.h"
 #include "GameCtrlSystem.h"
 
-FoodSystem::FoodSystem() : _size(30.0f),_spacing(80.0f) {
+FoodSystem::FoodSystem() {
 
 }
 
@@ -54,7 +54,6 @@ void FoodSystem::initSystem() {
 void FoodSystem::update() {
 
 	updateMagicState();
-	checkCollisions();
 
 	if (_foods.empty()) {
 		Message m;
@@ -94,13 +93,17 @@ void FoodSystem::recieve(const Message& m) {
 	{
 		case _m_NEW_GAME:
 			for (auto& f : _foods)
-				f.e->setAlive(true);
-				// reset all timers
+				f.e->setAlive(false);
+			
+			_foods.clear();
+			initSystem();
+				
 			break;
 
 		case _m_ROUND_START:
 			for (auto& f : _foods) {
-				// reset timers
+				f.isActive = false;
+				f.lastChangeTime = sdlutils().virtualTimer().currTime();
 			}
 			break;
 	}

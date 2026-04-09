@@ -18,25 +18,19 @@ public:
 	struct Food {
 		ecs::entity_t e;
 		bool isMagic;
-		bool isActive; // estado milagro
+		bool isActive; // miracle state
 	
 		float lastChangeTime;
-		float activeFrecuency; // tiempo entre activaciones
-		float activeTime;
+		float activeFrecuency; // time between activations
+		float activeTime; // time of activation (changes for each activation)
 	};
 
 private:
 	void updateMagicState();
-	void checkCollisions();
-	void removeFood(ecs::entity_t e);
-	void clearAll();
 
 	std::vector<Food> _foods;
 
 	ecs::entity_t _pacman;
-
-	float _size;
-	float _spacing;
 
 	const float FOOD_SIZE = 50.0f;
 	const float GRID_SPACING = 75.0f;
