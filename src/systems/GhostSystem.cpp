@@ -14,6 +14,8 @@ void GhostSystem::initSystem() {
 	auto& vT = sdlutils().virtualTimer();
 	_previousSpawnTime = vT.currTime();
 	_pacmanImmune = false;
+
+	_lastFrameChange = vT.currTime();
 }
 
 void GhostSystem::update() {
@@ -43,7 +45,7 @@ void GhostSystem::update() {
 	}
 
 	// Update ghost movement
-	for (auto g :_ghosts) {
+	for (auto& g :_ghosts) {
 		auto tr = _mngr->getComponent<Transform>(g);
 
 		// Follow pacman
@@ -61,6 +63,19 @@ void GhostSystem::update() {
 		}
 		if (tr->_pos.getY() <= 0 || tr->_pos.getY() + tr->_height >= sdlutils().height())
 			tr->_vel.setY(-tr->_vel.getY());
+	}
+
+	// advance frame
+	if (sdlutils().virtualTimer().currTime() - _lastFrameChange >= FRAME_CHANGE_INTERVAL) {
+		_lastFrameChange = sdlutils().virtualTimer().currTime();
+		for (auto& g : _ghosts) {
+			auto* gFI = _mngr->getComponent<FramedImage>(g);
+			gFI->_currFrame++;
+
+			if (gFI->_currFrame >= gFI->_frames) {
+				gFI->_currFrame = 0;
+			}
+		}
 	}
 }
 
