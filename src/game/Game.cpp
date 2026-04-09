@@ -9,6 +9,9 @@
 #include "../systems/GameCtrlSystem.h"
 #include "../systems/PacManSystem.h"
 #include "../systems/RenderSystem.h"
+#include "../systems/FoodSystem.h"
+#include "../systems/GhostSystem.h"
+#include "../systems/ImmunitySystem.h"
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
 
@@ -22,7 +25,7 @@ Game::Game() :
 		_foodSys(nullptr), //
 		_immunitySys(nullptr), //
 		_renderSys(nullptr), //
-		_collisionSys(nullptr) {
+		_collisionSys(nullptr){
 }
 
 Game::~Game() {
@@ -40,7 +43,7 @@ Game::~Game() {
 void Game::init() {
 
 	// initialize the SDL singleton
-	if (!SDLUtils::Init("PacMan, Stars, ...", 800, 600,
+	if (!SDLUtils::Init("PacMan", 800, 600,
 			"resources/config/resources.json")) {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
@@ -61,9 +64,13 @@ void Game::init() {
 
 	// add the systems
 	_pacmanSys = _mngr->addSystem<PacManSystem>();
+	_foodSys = _mngr->addSystem<FoodSystem>();
+	_ghostSys = _mngr->addSystem<GhostSystem>();
+	_immunitySys = _mngr->addSystem<ImmunitySystem>();
 	_gameCtrlSys = _mngr->addSystem<GameCtrlSystem>();
 	_renderSys = _mngr->addSystem<RenderSystem>();
 	_collisionSys = _mngr->addSystem<CollisionsSystem>();
+
 }
 
 void Game::start() {
@@ -85,6 +92,9 @@ void Game::start() {
 		}
 
 		_pacmanSys->update();
+		_foodSys->update();
+		_ghostSys->update();
+		_immunitySys->update();
 		_gameCtrlSys->update();
 		_collisionSys->update();
 

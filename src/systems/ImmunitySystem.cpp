@@ -33,7 +33,7 @@ void ImmunitySystem::recieve(const Message& m) {
 
 	switch (m.id) {
 		case _m_PACMAN_FOOD_COLLISION:
-			if (m.food_collision_data.f.isMagic && m.food_collision_data.f.isActive && !_active) {
+			if (m.food_collision_data.isMagic && m.food_collision_data.isActive && !_active) {
 				_active = true;
 				_lastTime = sdlutils().virtualTimer().currTime();
 

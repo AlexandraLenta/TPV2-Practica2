@@ -3,9 +3,7 @@
 #include "../ecs/System.h"
 #include <vector>
 
-struct Transform;
-
-class FoodSystem : public ecs:: System
+class FoodSystem : public ecs::System
 {
 public:
 	FoodSystem();

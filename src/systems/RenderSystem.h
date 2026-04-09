@@ -14,24 +14,27 @@ public:
 	virtual ~RenderSystem();
 	void initSystem() override;
 	void update() override;
+
+	void recieve(const Message& m) override;
 private:
-	void drawStars();
 	void drawPacMan();
 	void drawMsgs();
+	void drawGhosts();
+	void drawFood();
 	void draw(Transform *tr, const Texture *tex);
 	void draw(Transform* tr, const Texture* tex, SDL_FRect src);
 
 	struct renderInfo {
 		int frame = 1;
 		SDL_FRect srcRect;
-	} _pacmanRender, _ghostRender;
+	} _pacmanRender, _ghostRender, _foodRender;
 
 	const float SPRITE_SRC_SIZE = 128;
 
-	const float PACMAN_SRC_POS = 0;
+	const float PACMAN_SRC_ROW = 0;
 
-	const float NORMAL_GHOST_SRC_Y = 512;
-	const float BLUE_GHOST_SRC_Y = 768;
+	const float NORMAL_GHOST_SRC_ROW = 4;
+	const float BLUE_GHOST_SRC_ROW = 6;
 	
 	const int FRUIT_ROW = 1;
 	const int FRUIT_NORMAL_COL = 4;
