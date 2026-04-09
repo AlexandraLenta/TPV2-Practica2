@@ -92,10 +92,18 @@ void GhostSystem::recieve(const Message& m) {
 
 	case _m_IMMUNITY_START:
 		_pacmanImmune = true;
+		for (auto& g : _ghosts) {
+			auto* img = _mngr->getComponent<FramedImage>(g);
+			img->_texCol = BLUE_GHOST_SRC_ROW;
+		}
 		break;
 
 	case _m_IMMUNITY_END:
 		_pacmanImmune = false;
+		for (auto& g : _ghosts) {
+			auto* img = _mngr->getComponent<FramedImage>(g);
+			img->_texCol = NORMAL_GHOST_SRC_ROW;
+		}
 		break;
 
 	case _m_PACMAN_GHOST_COLLISION:
