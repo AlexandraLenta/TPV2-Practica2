@@ -41,6 +41,9 @@
     <ClCompile Include="src\utils\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\Immunity.h" />
+    <ClInclude Include="src\components\FoodInfo.h" />
+    <ClInclude Include="src\components\Health.h" />
     <ClInclude Include="src\systems\ImmunitySystem.h" />
     <ClInclude Include="src\systems\FoodSystem.h" />
     <ClInclude Include="src\systems\GhostSystem.h" />

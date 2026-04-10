@@ -5,6 +5,8 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
 #include "GameCtrlSystem.h"
+#include "../components/FoodInfo.h"
+
 ImmunitySystem::ImmunitySystem() :_active(false) {
 
 }
@@ -33,7 +35,8 @@ void ImmunitySystem::recieve(const Message& m) {
 
 	switch (m.id) {
 		case _m_PACMAN_FOOD_COLLISION:
-			if (m.food_collision_data.isMagic && m.food_collision_data.isActive && !_active) {
+			auto* fInfo = _mngr->getComponent<FoodInfo>(m.food_collision_data.e);
+			if (fInfo->_isMagic && fInfo->_isActive && !_active) { // if the fruit is magic, active, and we weren't already in immunity state
 				_active = true;
 				_lastTime = sdlutils().virtualTimer().currTime();
 

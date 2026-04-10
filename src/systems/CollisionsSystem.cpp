@@ -26,6 +26,12 @@ void CollisionsSystem::update() {
 	auto pm = _mngr->getHandler(ecs::hdlr::PACMAN);
 	auto pTR = _mngr->getComponent<Transform>(pm);
 
+	ghostCollision(pm, pTR);
+	foodCollision(pm, pTR);
+}	
+
+void 
+CollisionsSystem::ghostCollision(ecs::entity_t pm, Transform* pTR) {
 	auto ghostList = _mngr->getEntities(ecs::grp::GHOSTS);
 
 	// pacman <-> ghosts
@@ -43,31 +49,21 @@ void CollisionsSystem::update() {
 	}
 }
 
-	// food
-	//for (auto it = _foods.begin(); it != _foods.end(); ) {
+void 
+CollisionsSystem::foodCollision(ecs::entity_t pm, Transform* pTR) {
+	auto foodList = _mngr->getEntities(ecs::grp::FRUIT);
 
-	//	auto tr = _mngr->getComponent<Transform>(it->e);
+	for (auto it = foodList.begin(); it != foodList.end(); ) {
 
-	//	bool coll =
-	//		tr->_pos.getX() < pTR->_pos.getX() + pTR->_width &&
-	//		tr->_pos.getX() + tr->_width > pTR->_pos.getX() &&
-	//		tr->_pos.getY() < pTR->_pos.getY() + pTR->_height &&
-	//		tr->_pos.getY() + tr->_height > pTR->_pos.getY();
+		auto tr = _mngr->getComponent<Transform>(*it);
 
-	//	if (coll) {
-
-	//		Message m;
-	//		m.id = _m_PACMAN_FOOD_COLLISION;
-	//		m.pacman_food_collision.isMagic = it->isMagic;
-	//		m.pacman_food_collision.isActive = it->isActive;
-
-	//		_mngr->send(m);
-
-	//		it->e->setAlive(false);
-	//		it = _foods.erase(it);
-	//	}
-	//	else {
-	//		++it;
-	//	}
-	//}
-
+		if (_mngr->isAlive(*it)) {
+			if (Collisions::collides(pTR->_pos, pTR->_width, pTR->_height, tr->_pos, tr->_width, tr->_height)) {
+				Message m;
+				m.id = _m_PACMAN_FOOD_COLLISION;
+				m.food_collision_data.e = *it;
+				_mngr->send(m);
+			}
+		}
+	}
+}

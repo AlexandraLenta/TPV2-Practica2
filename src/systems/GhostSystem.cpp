@@ -7,13 +7,13 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
 #include "GameCtrlSystem.h"
+#include "../components/Immunity.h"
 
 void GhostSystem::initSystem() {
 	_pacman = _mngr->getHandler(ecs::hdlr::PACMAN);
 
 	auto& vT = sdlutils().virtualTimer();
 	_previousSpawnTime = vT.currTime();
-	_pacmanImmune = false;
 
 	_lastFrameChange = vT.currTime();
 }
@@ -25,7 +25,7 @@ void GhostSystem::update() {
 	if (vT.currTime() - _previousSpawnTime >= SPAWN_INTERVAL) {
 		_previousSpawnTime = vT.currTime(); // restart timer
 
-		if (_ghosts.size() < 10 && !_pacmanImmune) { // check conditions: less than 10 ghosts and pacman not immune			
+		if (_ghosts.size() < 10 && !_mngr->getComponent<Immunity>(_pacman)->_isImmune) { // check conditions: less than 10 ghosts and pacman not immune			
 			auto g = _mngr->addEntity(ecs::grp::GHOSTS); // create the entity
 			
 			// random corner
@@ -91,7 +91,6 @@ void GhostSystem::recieve(const Message& m) {
 		break;
 
 	case _m_IMMUNITY_START:
-		_pacmanImmune = true;
 		for (auto& g : _ghosts) {
 			auto* img = _mngr->getComponent<FramedImage>(g);
 			img->_texCol = BLUE_GHOST_SRC_ROW;
@@ -99,7 +98,6 @@ void GhostSystem::recieve(const Message& m) {
 		break;
 
 	case _m_IMMUNITY_END:
-		_pacmanImmune = false;
 		for (auto& g : _ghosts) {
 			auto* img = _mngr->getComponent<FramedImage>(g);
 			img->_texCol = NORMAL_GHOST_SRC_ROW;
@@ -107,12 +105,9 @@ void GhostSystem::recieve(const Message& m) {
 		break;
 
 	case _m_PACMAN_GHOST_COLLISION:
-		if (_pacmanImmune) {
+		if (_mngr->getComponent<Immunity>(_pacman)->_isImmune) {
 			_mngr->setAlive(m.ghost_collision_data.e, false);
 			_ghosts.erase(std::find(_ghosts.begin(), _ghosts.end(), m.ghost_collision_data.e));
-		}
-		else {
-			std::cout << "pacman dead.\n";
 		}
 		break;
 	}

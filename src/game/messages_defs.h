@@ -22,8 +22,7 @@ struct Message {
 	union {
 		// _m_PACMAN_FOOD_COLLISION
 		struct {
-			bool isMagic;
-			bool isActive;
+			ecs::entity_t e;
 		} food_collision_data;
 
 		// _m_PACMAN_GHOST_COLLISION

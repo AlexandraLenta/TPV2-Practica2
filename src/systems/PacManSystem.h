@@ -23,5 +23,7 @@ private:
 
 	const float PACMAN_SRC_ROW = 0;
 	const float PACMAN_SRC_COL = 0;
+
+	const int HP = 3;
 };
 

@@ -5,6 +5,7 @@
 #include "../components/Transform.h"
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
+#include "../components/FoodInfo.h"
 #include "GameCtrlSystem.h"
 
 FoodSystem::FoodSystem() {
@@ -31,23 +32,16 @@ void FoodSystem::initSystem() {
 
 			bool isMagic = (rand() % 100) < 10;
 
-			Food f;
-			f.e = e;
-			f.isMagic = isMagic;
-			f.isActive = false;
-			f.lastChangeTime = sdlutils().virtualTimer().currTime();
-			f.activeTime = 0.0f;
+			float activeF = 0;
 
 			if (isMagic)
-				f.activeFrecuency = 10000 + rand() % 11000;
-			else
-				f.activeFrecuency = 0;
+				activeF = 10000 + rand() % 11000;
 
-			std::cout << f.activeFrecuency << '\n';
+			auto foodComp = _mngr->addComponent<FoodInfo>(e, isMagic, sdlutils().virtualTimer().currTime(), activeF, 0.0f);
 
 			auto img = _mngr->addComponent<Image>(e, &sdlutils().images().at("pacman"), FRUIT_ROW, FRUIT_NORMAL_COL);
 
-			_foods.push_back(f);
+			_foods.push_back(e);
 		}
 	}
 }
@@ -68,23 +62,24 @@ void FoodSystem::updateMagicState() {
 
 	auto& vT = sdlutils().virtualTimer();
 
-	for (auto& f : _foods) {
+	for (auto& e : _foods) {
+		auto* f = _mngr->getComponent<FoodInfo>(e);
 
-		if (!f.isMagic) continue;
+		if (!f->_isMagic) continue;
 
-		if (!f.isActive) {
-			if (vT.currTime() - f.lastChangeTime >= f.activeFrecuency) {
-				f.isActive = true;
-				f.activeTime = (1 + rand() % 5) * 1000.0f;
-				f.lastChangeTime = vT.currTime();
-				auto img = _mngr->getComponent<Image>(f.e)->_texCol = FRUIT_MAGIC_COL;
+		if (!f->_isActive) {
+			if (vT.currTime() - f->_lastChangeTime >= f->_activeFrecuency) {
+				f->_isActive = true;
+				f->_activeTime = (1 + rand() % 5) * 1000.0f;
+				f->_lastChangeTime = vT.currTime();
+				auto img = _mngr->getComponent<Image>(e)->_texCol = FRUIT_MAGIC_COL;
 			}
 		}
 		else {
-			if (vT.currTime() - f.lastChangeTime >= f.activeTime) {
-				f.isActive = false;
-				f.lastChangeTime = vT.currTime();
-				auto img = _mngr->getComponent<Image>(f.e)->_texCol = FRUIT_NORMAL_COL;
+			if (vT.currTime() - f->_lastChangeTime >= f->_activeTime) {
+				f->_isActive = false;
+				f->_lastChangeTime = vT.currTime();
+				auto img = _mngr->getComponent<Image>(e)->_texCol = FRUIT_NORMAL_COL;
 			}
 		}
 	}
@@ -96,7 +91,7 @@ void FoodSystem::recieve(const Message& m) {
 	{
 		case _m_NEW_GAME:
 			for (auto& f : _foods)
-				f.e->setAlive(false);
+				f->setAlive(false);
 			
 			_foods.clear();
 			initSystem();
@@ -105,8 +100,19 @@ void FoodSystem::recieve(const Message& m) {
 
 		case _m_ROUND_START:
 			for (auto& f : _foods) {
-				f.isActive = false;
-				f.lastChangeTime = sdlutils().virtualTimer().currTime();
+				auto* fInfo = _mngr->getComponent<FoodInfo>(f);
+				fInfo->_isActive = false;
+				fInfo->_lastChangeTime = sdlutils().virtualTimer().currTime();
+			}
+			break;
+		case _m_PACMAN_FOOD_COLLISION:
+			_mngr->setAlive(m.food_collision_data.e, false); // remove fruit
+			_foods.erase(std::find(_foods.begin(), _foods.end(), m.food_collision_data.e));
+			if (_foods.size() <= 0) {
+				Message m;
+				m.id = _m_GAME_OVER;
+				m.game_over_data.hasWon = true;
+				_mngr->send(m);
 			}
 			break;
 	}

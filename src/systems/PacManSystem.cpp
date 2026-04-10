@@ -7,6 +7,8 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/InputHandler.h"
 #include "../sdlutils/SDLUtils.h"
+#include "../components/Health.h"
+#include "../components/Immunity.h"
 
 PacManSystem::PacManSystem() :
 		_pmTR(nullptr) {
@@ -29,6 +31,9 @@ void PacManSystem::initSystem() {
 	auto y = (sdlutils().height() - s) / 2.0f;
 	_pmTR->init(Vector2D(x, y), Vector2D(), s, s, 0.0f);
 	_mngr->addComponent<FramedImage>(_pacman, &sdlutils().images().at("pacman"), 2, PACMAN_SRC_ROW, PACMAN_SRC_COL);
+	_mngr->addComponent<Immunity>(_pacman);
+	_mngr->addComponent<Health>(_pacman, HP);
+
 }
 
 void PacManSystem::update() {
@@ -96,7 +101,31 @@ void PacManSystem::recieve(const Message& m) {
 		break;
 
 	case _m_NEW_GAME:
-		// reset vidas
+		_mngr->getComponent<Health>(_pacman)->_hp = HP;
 		break;
+
+	case _m_IMMUNITY_START:
+		_mngr->getComponent<Immunity>(_pacman)->_isImmune = true;
+		break;
+
+	case _m_IMMUNITY_END:
+		_mngr->getComponent<Immunity>(_pacman)->_isImmune = false;
+		break;
+
+	case _m_PACMAN_GHOST_COLLISION:
+		if (!_mngr->getComponent<Immunity>(_pacman)->_isImmune) {
+			auto* health = _mngr->getComponent<Health>(_pacman);
+			health->_hp--;
+
+			Message m;
+			if (health->_hp <= 0) {
+				m.id = _m_GAME_OVER;
+				m.game_over_data.hasWon = false;
+			}
+			else {
+				m.id = _m_ROUND_START;
+			}
+			_mngr->send(m);
+		}
 	}
 }

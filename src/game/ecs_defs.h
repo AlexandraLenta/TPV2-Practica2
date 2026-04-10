@@ -8,12 +8,18 @@ struct Transform;
 struct Image;
 struct FramedImage;
 struct Points;
+struct FoodInfo;
+struct Health;
+struct Immunity;
 
 #define _CMPS_LIST_ \
 	Transform, \
 	Image, \
 	Points, \
-	FramedImage
+	FramedImage, \
+	FoodInfo, \
+	Health, \
+	Immunity
 
 // Groups list - must have at least one element
 //

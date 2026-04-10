@@ -13,20 +13,10 @@ public:
 	void update() override;
 	void recieve(const Message& m) override;
 
-	struct Food {
-		ecs::entity_t e;
-		bool isMagic;
-		bool isActive; // miracle state
-	
-		float lastChangeTime;
-		float activeFrecuency; // time between activations
-		float activeTime; // time of activation (changes for each activation)
-	};
-
 private:
 	void updateMagicState();
 
-	std::vector<Food> _foods;
+	std::vector<ecs::entity_t> _foods;
 
 	ecs::entity_t _pacman;
 

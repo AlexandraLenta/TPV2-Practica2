@@ -19,7 +19,6 @@ private:
 	std::vector<ecs::entity_t> _ghosts;
 
 	float _previousSpawnTime;
-	bool _pacmanImmune = false;
 	float _lastFrameChange;
 
 	const float SPAWN_INTERVAL = 5000.0f;
