@@ -53,7 +53,7 @@ void
 CollisionsSystem::foodCollision(ecs::entity_t pm, Transform* pTR) {
 	auto foodList = _mngr->getEntities(ecs::grp::FRUIT);
 
-	for (auto it = foodList.begin(); it != foodList.end(); ) {
+	for (auto it = foodList.begin(); it != foodList.end(); it++) {
 
 		auto tr = _mngr->getComponent<Transform>(*it);
 
