@@ -5,6 +5,7 @@
 #include "../components/Transform.h"
 #include "../ecs/EntityManager.h"
 #include "../utils/Collisions.h"
+#include "../sdlutils/SDLUtils.h"
 
 
 CollisionsSystem::CollisionsSystem() {
@@ -40,6 +41,7 @@ CollisionsSystem::ghostCollision(ecs::entity_t pm, Transform* pTR) {
 
 		if (_mngr->isAlive(*it)) {
 			if (Collisions::collides(pTR->_pos, pTR->_width, pTR->_height, tr->_pos, tr->_width, tr->_height)) {
+
 				Message m;
 				m.id = _m_PACMAN_GHOST_COLLISION;
 				m.ghost_collision_data.e = *it;
@@ -59,6 +61,10 @@ CollisionsSystem::foodCollision(ecs::entity_t pm, Transform* pTR) {
 
 		if (_mngr->isAlive(*it)) {
 			if (Collisions::collides(pTR->_pos, pTR->_width, pTR->_height, tr->_pos, tr->_width, tr->_height)) {
+
+				sdlutils().soundEffects().at("pacman_eat").play("se");
+				sdlutils().soundEffects().at("pacman_chomp").play("se");
+
 				Message m;
 				m.id = _m_PACMAN_FOOD_COLLISION;
 				m.food_collision_data.e = *it;

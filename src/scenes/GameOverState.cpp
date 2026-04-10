@@ -8,7 +8,7 @@
 void GameOverState::enter() {
 	if (Game::Instance()->getMngr()->getEntities(ecs::grp::FRUIT).size() <= 0) {
 		_tex = &sdlutils().msgs().at("game_over_win");
-		sdlutils().soundEffects().at("pacman_win").play("se");
+		sdlutils().soundEffects().at("pacman_won").play("se");
 	}
 	else {
 		_tex = &sdlutils().msgs().at("game_over_lose");
