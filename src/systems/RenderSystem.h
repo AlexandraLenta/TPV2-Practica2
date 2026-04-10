@@ -19,9 +19,11 @@ private:
 	void drawMsgs();
 	void drawGhosts();
 	void drawFood();
+	void drawHealth();
 	void draw(Transform *tr, const Texture *tex);
 	void draw(Transform* tr, const Texture* tex, SDL_FRect src);
 
 	const float SPRITE_SRC_SIZE = 128;
+	const float HP_SIZE = 40;
 };
 

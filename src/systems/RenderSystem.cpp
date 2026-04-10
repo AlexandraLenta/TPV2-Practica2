@@ -9,6 +9,7 @@
 #include "../sdlutils/SDLUtils.h"
 #include "../sdlutils/Texture.h"
 #include "GameCtrlSystem.h"
+#include "../components/Health.h"
 
 RenderSystem::RenderSystem() {
 
@@ -25,6 +26,7 @@ void RenderSystem::update() {
 	drawPacMan();
 	drawGhosts();
 	drawFood();
+	drawHealth();
 }
 
 void RenderSystem::drawPacMan() {
@@ -84,6 +86,19 @@ RenderSystem::drawFood() {
 
 		SDL_FRect srcRect = { src.x, src.y, src.w, src.h };
 		draw(tr, tex, srcRect);
+	}
+}
+
+void 
+RenderSystem::drawHealth() {
+	auto* img = &sdlutils().images().at("heart");
+	int currHealth = _mngr->getComponent<Health>(_mngr->getHandler(ecs::hdlr::PACMAN))->_hp;
+	for (int i = 0; i < currHealth; i++) {
+		Transform t;
+		t._height = HP_SIZE;
+		t._width = HP_SIZE;
+		t._pos = { i * HP_SIZE, 0 };
+		draw(&t, img);
 	}
 }
 
