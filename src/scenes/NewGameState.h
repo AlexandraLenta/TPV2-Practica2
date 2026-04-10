@@ -9,7 +9,7 @@ public:
     virtual ~NewGameState() {}
 
     void update() override;
-    void enter() override {}
+    void enter() override;
     void leave() override {}
 
 private:

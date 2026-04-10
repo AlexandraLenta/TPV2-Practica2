@@ -7,6 +7,10 @@ NewGameState::NewGameState() {
     _tex = &sdlutils().msgs().at("game_start");
 }
 
+void NewGameState::enter() {
+    sdlutils().soundEffects().at("pacman_intro").play("se");
+}
+
 void NewGameState::update() {
     assert(_tex != nullptr);
 
