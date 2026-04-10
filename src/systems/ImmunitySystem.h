@@ -15,6 +15,6 @@ private:
 	bool _active;
 	float _lastTime;
 
-	const float IMMUNITY_TIME = 10.0f;
+	const float IMMUNITY_TIME = 10000.0f;
 };
 

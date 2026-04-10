@@ -82,7 +82,6 @@ void GhostSystem::update() {
 void GhostSystem::recieve(const Message& m) {
 
 	switch (m.id) {
-
 	case _m_ROUND_START:
 	case _m_ROUND_OVER:
 		for (auto g : _ghosts)
@@ -93,14 +92,14 @@ void GhostSystem::recieve(const Message& m) {
 	case _m_IMMUNITY_START:
 		for (auto& g : _ghosts) {
 			auto* img = _mngr->getComponent<FramedImage>(g);
-			img->_texCol = BLUE_GHOST_SRC_ROW;
+			img->_texRow = BLUE_GHOST_SRC_ROW;
 		}
 		break;
 
 	case _m_IMMUNITY_END:
 		for (auto& g : _ghosts) {
 			auto* img = _mngr->getComponent<FramedImage>(g);
-			img->_texCol = NORMAL_GHOST_SRC_ROW;
+			img->_texRow = NORMAL_GHOST_SRC_ROW;
 		}
 		break;
 
