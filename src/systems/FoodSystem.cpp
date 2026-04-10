@@ -7,6 +7,7 @@
 #include "../sdlutils/SDLUtils.h"
 #include "../components/FoodInfo.h"
 #include "GameCtrlSystem.h"
+#include "../game/Game.h"
 
 FoodSystem::FoodSystem() {
 
@@ -53,7 +54,6 @@ void FoodSystem::update() {
 	if (_foods.empty()) {
 		Message m;
 		m.id = _m_GAME_OVER;
-		m.game_over_data.hasWon = true;
 		_mngr->send(m);
 	}
 }
@@ -111,8 +111,10 @@ void FoodSystem::recieve(const Message& m) {
 			if (_foods.size() <= 0) {
 				Message m;
 				m.id = _m_GAME_OVER;
-				m.game_over_data.hasWon = true;
 				_mngr->send(m);
+
+				Game::Instance()->setState(Game::State::GAMEOVER);
+				// set win or lose
 			}
 			break;
 	}

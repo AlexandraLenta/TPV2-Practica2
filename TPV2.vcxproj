@@ -19,6 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\scenes\GameOverState.cpp" />
+    <ClCompile Include="src\scenes\NewGameState.cpp" />
+    <ClCompile Include="src\scenes\NewRoundState.cpp" />
+    <ClCompile Include="src\scenes\RunningState.cpp" />
+    <ClCompile Include="src\scenes\GameState.cpp" />
+    <ClCompile Include="src\scenes\PausedState.cpp" />
     <ClCompile Include="src\systems\ImmunitySystem.cpp" />
     <ClCompile Include="src\systems\FoodSystem.cpp" />
     <ClCompile Include="src\systems\GhostSystem.cpp" />
@@ -41,9 +47,15 @@
     <ClCompile Include="src\utils\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scenes\GameOverState.h" />
+    <ClInclude Include="src\scenes\NewGameState.h" />
+    <ClInclude Include="src\scenes\NewRoundState.h" />
+    <ClInclude Include="src\scenes\RunningState.h" />
     <ClInclude Include="src\components\Immunity.h" />
     <ClInclude Include="src\components\FoodInfo.h" />
     <ClInclude Include="src\components\Health.h" />
+    <ClInclude Include="src\scenes\GameState.h" />
+    <ClInclude Include="src\scenes\PausedState.h" />
     <ClInclude Include="src\systems\ImmunitySystem.h" />
     <ClInclude Include="src\systems\FoodSystem.h" />
     <ClInclude Include="src\systems\GhostSystem.h" />

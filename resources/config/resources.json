@@ -12,11 +12,12 @@
   ],
   
   "messages" : [
-    { "id" : "PressAnyKey", "text" : "Press Any Key", "font" : "ARIAL24", "color" : "0x112233ff", "bg" : "0xffffffff" },
-    { "id" : "paused", "text" : "Press any key to continue", "font" : "ARIAL24", "color" : "0xffffffff" },
-    { "id" : "newgame", "text" : "Press any key to start a new Game", "font" : "ARIAL24", "color" : "0x0000ffff" },
-    { "id" : "newround", "text" : "Press ENTER to start a new Round", "font" : "ARIAL24", "color" : "0xffffffff" },
-    { "id" : "gameover", "text" : "GAME OVER", "font" : "ARIAL24", "color" : "0xff0000ff" }
+    { "id" : "game_start", "text" : "Press any key to start the game", "font" : "ARIAL24", "color" : "0xffffffff" },
+    { "id" : "pause", "text" : "Press any key to continue", "font" : "ARIAL24", "color" : "0xffffffff" },
+    { "id" : "new_game", "text" : "Press any key to start a new Game", "font" : "ARIAL24", "color" : "0x0000ffff" },
+    { "id" : "new_round", "text" : "Press ENTER to start a new Round", "font" : "ARIAL24", "color" : "0xffffffff" },
+    { "id" : "game_over_win", "text" : "GAME OVER CHAMPION! Press any key to start a new game.", "font" : "ARIAL24", "color" : "0xff0000ff" },
+    { "id" : "game_over_lose", "text" : "GAME OVER LOSER! Press any key to start a new game.", "font" : "ARIAL24", "color" : "0xff0000ff" }
   ],
 
     "sounds": [

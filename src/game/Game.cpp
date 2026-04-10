@@ -5,31 +5,28 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/InputHandler.h"
 #include "../sdlutils/SDLUtils.h"
-#include "../systems/CollisionsSystem.h"
-#include "../systems/GameCtrlSystem.h"
-#include "../systems/PacManSystem.h"
-#include "../systems/RenderSystem.h"
-#include "../systems/FoodSystem.h"
-#include "../systems/GhostSystem.h"
-#include "../systems/ImmunitySystem.h"
 #include "../utils/Vector2D.h"
 #include "../utils/Collisions.h"
+#include "../scenes/PausedState.h"
+#include "../scenes/NewGameState.h"
+#include "../scenes/NewRoundState.h"
+#include "../scenes/RunningState.h"
+#include "../scenes/GameOverState.h"
 
 using ecs::EntityManager;
 
 Game::Game() :
-		_mngr(nullptr), //
-		_pacmanSys(nullptr), //
-		_gameCtrlSys(nullptr), //
-		_ghostSys(nullptr), //
-		_foodSys(nullptr), //
-		_immunitySys(nullptr), //
-		_renderSys(nullptr), //
-		_collisionSys(nullptr){
+		_mngr(nullptr) {
 }
 
 Game::~Game() {
 	delete _mngr;
+
+	delete _paused_state;
+	delete _runing_state;
+	delete _newgame_state;
+	delete _newround_state;
+	delete _gameover_state;
 
 	// release InputHandler if the instance was created correctly.
 	if (InputHandler::HasInstance())
@@ -40,7 +37,7 @@ Game::~Game() {
 		SDLUtils::Release();
 }
 
-void Game::init() {
+bool Game::init() {
 
 	// initialize the SDL singleton
 	if (!SDLUtils::Init("PacMan", 800, 600,
@@ -48,32 +45,33 @@ void Game::init() {
 
 		std::cerr << "Something went wrong while initializing SDLUtils"
 				<< std::endl;
-		return;
+		return false;
 	}
 
 	// initialize the InputHandler singleton
 	if (!InputHandler::Init()) {
 		std::cerr << "Something went wrong while initializing SDLHandler"
 				<< std::endl;
-		return;
+		return false;
 
 	}
+
+	return true;
+}
+
+void Game::start() {
 
 	// Create the manager
 	_mngr = new EntityManager();
 
-	// add the systems
-	_pacmanSys = _mngr->addSystem<PacManSystem>();
-	_foodSys = _mngr->addSystem<FoodSystem>();
-	_ghostSys = _mngr->addSystem<GhostSystem>();
-	_immunitySys = _mngr->addSystem<ImmunitySystem>();
-	_gameCtrlSys = _mngr->addSystem<GameCtrlSystem>();
-	_renderSys = _mngr->addSystem<RenderSystem>();
-	_collisionSys = _mngr->addSystem<CollisionsSystem>();
+	// create the scenes
+	_paused_state = new PausedState();
+	_runing_state = new RunningState();
+	_newgame_state = new NewGameState();
+	_newround_state = new NewRoundState();
+	_gameover_state = new GameOverState();
 
-}
-
-void Game::start() {
+	_state = _newgame_state;
 
 	// a boolean to exit the loop
 	bool exit = false;
@@ -97,18 +95,9 @@ void Game::start() {
 
 		_mngr->flush();
 
-		_pacmanSys->update();
-		_foodSys->update();
-		_ghostSys->update();
-		_immunitySys->update();
-		_gameCtrlSys->update();
-		_collisionSys->update();
+		_state->update(); // update current state
 
 		_mngr->refresh();
-
-		sdlutils().clearRenderer();
-		_renderSys->update();
-		sdlutils().presentRenderer();
 
 		Uint32 frameTime = sdlutils().currRealTime() - startTime;
 

@@ -29,10 +29,5 @@ struct Message {
 		struct {
 			ecs::entity_t e;
 		} ghost_collision_data;
-
-		// _m_GAME_OVER
-		struct {
-			bool hasWon;
-		} game_over_data;
 	};
 };

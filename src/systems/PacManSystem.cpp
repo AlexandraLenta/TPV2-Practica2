@@ -9,6 +9,7 @@
 #include "../sdlutils/SDLUtils.h"
 #include "../components/Health.h"
 #include "../components/Immunity.h"
+#include "../game/Game.h"
 
 PacManSystem::PacManSystem() :
 		_pmTR(nullptr) {
@@ -120,12 +121,16 @@ void PacManSystem::recieve(const Message& m) {
 			Message m;
 			if (health->_hp <= 0) {
 				m.id = _m_GAME_OVER;
-				m.game_over_data.hasWon = false;
+				_mngr->send(m);
+
+				Game::Instance()->setState(Game::State::GAMEOVER);
 			}
 			else {
 				m.id = _m_ROUND_START;
+				_mngr->send(m);
+
+				Game::Instance()->setState(Game::State::NEWROUND);
 			}
-			_mngr->send(m);
 		}
 	}
 }
