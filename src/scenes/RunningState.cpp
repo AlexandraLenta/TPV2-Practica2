@@ -56,10 +56,7 @@ RunningState::updateSystems() {
     _immunitySys->update();
     _gameCtrlSys->update();
     _collisionSys->update();
-
-    sdlutils().clearRenderer();
     _renderSys->update();
-    sdlutils().presentRenderer();
 }
 
 void

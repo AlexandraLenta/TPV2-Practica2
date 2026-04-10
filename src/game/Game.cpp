@@ -94,8 +94,9 @@ void Game::start() {
 		}
 
 		_mngr->flush();
-
+		sdlutils().clearRenderer();
 		_state->update(); // update current state
+		sdlutils().presentRenderer();
 
 		_mngr->refresh();
 
