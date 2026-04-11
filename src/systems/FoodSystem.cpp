@@ -1,7 +1,6 @@
 #include "FoodSystem.h"
 #include <algorithm>
 #include "../components/Image.h"
-#include "../components/Points.h"
 #include "../components/Transform.h"
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"

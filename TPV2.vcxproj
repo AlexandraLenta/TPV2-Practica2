@@ -60,7 +60,6 @@
     <ClInclude Include="src\systems\FoodSystem.h" />
     <ClInclude Include="src\systems\GhostSystem.h" />
     <ClInclude Include="src\components\Image.h" />
-    <ClInclude Include="src\components\Points.h" />
     <ClInclude Include="src\components\Transform.h" />
     <ClInclude Include="src\ecs\Component.h" />
     <ClInclude Include="src\ecs\ecs.h" />

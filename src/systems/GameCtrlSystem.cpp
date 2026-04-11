@@ -2,12 +2,10 @@
 
 #include "GameCtrlSystem.h"
 
-#include "../components/Points.h"
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/InputHandler.h"
 
-GameCtrlSystem::GameCtrlSystem() :
-		_score() {
+GameCtrlSystem::GameCtrlSystem() {
 	// TODO Auto-generated constructor stub
 
 }

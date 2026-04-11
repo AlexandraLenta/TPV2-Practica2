@@ -22,7 +22,6 @@ void RenderSystem::initSystem() {
 }
 
 void RenderSystem::update() {
-	drawMsgs();
 	drawPacMan();
 	drawGhosts();
 	drawFood();
@@ -39,23 +38,6 @@ void RenderSystem::drawPacMan() {
 
 	SDL_FRect srcRect = { src.x + img->_currFrame * src.w, src.y, src.w, src.h };
 	draw(tr, tex, srcRect);
-}
-
-void RenderSystem::drawMsgs() {
-	// draw the score
-	//
-	auto score = _mngr->getSystem<GameCtrlSystem>()->getScore();
-
-	Texture scoreTex(sdlutils().renderer(), std::to_string(score),
-			sdlutils().fonts().at("ARIAL24"), build_sdlcolor(0x444444ff));
-
-	SDL_FRect dest = build_sdlfrect( //
-			(sdlutils().width() - scoreTex.width()) / 2.0f, //
-			10.0f, //
-			scoreTex.width(), //
-			scoreTex.height());
-
-	scoreTex.render(dest);
 }
 
 void

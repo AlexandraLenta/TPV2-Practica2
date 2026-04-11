@@ -7,7 +7,6 @@
 struct Transform;
 struct Image;
 struct FramedImage;
-struct Points;
 struct FoodInfo;
 struct Health;
 struct Immunity;
@@ -15,7 +14,6 @@ struct Immunity;
 #define _CMPS_LIST_ \
 	Transform, \
 	Image, \
-	Points, \
 	FramedImage, \
 	FoodInfo, \
 	Health, \
