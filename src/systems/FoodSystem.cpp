@@ -113,8 +113,7 @@ void FoodSystem::recieve(const Message& m) {
 				m.id = _m_GAME_OVER;
 				_mngr->send(m);
 
-				Game::Instance()->setState(Game::State::GAMEOVER);
-				// set win or lose
+				Game::Instance()->setGameOver(true);
 			}
 			break;
 	}

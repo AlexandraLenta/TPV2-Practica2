@@ -71,7 +71,7 @@ void Game::start() {
 	_newround_state = new NewRoundState();
 	_gameover_state = new GameOverState();
 
-	_state = _newgame_state;
+	setState(State::NEWGAME);
 
 	// a boolean to exit the loop
 	bool exit = false;

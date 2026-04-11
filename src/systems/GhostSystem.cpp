@@ -106,7 +106,6 @@ void GhostSystem::recieve(const Message& m) {
 	case _m_PACMAN_GHOST_COLLISION:
 		if (_mngr->getComponent<Immunity>(_pacman)->_isImmune) {
 
-			sdlutils().soundEffects().at("pacman_eat").play("se");
 			sdlutils().soundEffects().at("pacman_chomp").play("se");
 			_mngr->setAlive(m.ghost_collision_data.e, false);
 			_ghosts.erase(std::find(_ghosts.begin(), _ghosts.end(), m.ghost_collision_data.e));

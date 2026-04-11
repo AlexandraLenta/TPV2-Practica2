@@ -32,7 +32,8 @@ public:
 	};
 
 	inline void setState(State s) {
-		_state->leave();
+		if (_state)
+			_state->leave();
 		switch (s) {
 		case RUNNING:
 			_state = _runing_state;
@@ -55,6 +56,14 @@ public:
 		_state->enter();
 	}
 
+	void setGameOver(bool gO) {
+		gameOver = gO;
+	}
+
+	bool getGameOver() {
+		return gameOver;
+	}
+
 private:
 	ecs::EntityManager *_mngr;
 
@@ -64,5 +73,7 @@ private:
 	GameState* _newgame_state;
 	GameState* _newround_state;
 	GameState* _gameover_state;
+
+	bool gameOver = false;
 };
 
