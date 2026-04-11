@@ -37,6 +37,7 @@ RunningState::RunningState() :
 }
 
 void RunningState::enter() {
+    sdlutils().virtualTimer().resume();
 }
 
 void RunningState::leave() {

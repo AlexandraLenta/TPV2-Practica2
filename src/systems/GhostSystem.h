@@ -22,8 +22,8 @@ private:
 	float _lastFrameChange;
 
 	const float SPAWN_INTERVAL = 5000.0f;
-	const float GHOST_SIZE = 60.0f;
-	const float UPDATE_VEL_PROBABILITY = 0.005;
+	const float GHOST_SIZE = 55.0f;
+	const float UPDATE_VEL_PROBABILITY = 0.005f;
 
 	const float FRAME_CHANGE_INTERVAL = 250.0f;
 

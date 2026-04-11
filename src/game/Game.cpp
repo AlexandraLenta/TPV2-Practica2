@@ -81,6 +81,9 @@ void Game::start() {
 
 	vt.resetTime(); // start counting from this instance
 
+
+	vt.pause(); // pause time to make sure no time passes until we start the game
+
 	while (!exit) {
 		Uint32 startTime = sdlutils().currRealTime();
 		vt.regCurrTime(); // register current time so all objects use the same time

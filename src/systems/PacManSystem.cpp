@@ -64,7 +64,7 @@ void PacManSystem::update() {
 	_pmTR->_pos = _pmTR->_pos + _pmTR->_vel;
 
 	// check left/right borders
-	if (_pmTR->_pos.getX() < 0) {
+	if (_pmTR->_pos.getX() + 1.0f < 0) { // we add + 1 because of the sprite. when it rotates downward, the size makes it so that you can't advance downward because it's considered to be outside of the border
 		_pmTR->_pos.setX(0.0f);
 		_pmTR->_vel.set(0.0f, 0.0f);
 	} else if (_pmTR->_pos.getX() + _pmTR->_width > sdlutils().width()) {

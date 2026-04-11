@@ -95,7 +95,6 @@ void FoodSystem::recieve(const Message& m) {
 			
 			_foods.clear();
 			initSystem();
-				
 			break;
 
 		case _m_ROUND_START:
