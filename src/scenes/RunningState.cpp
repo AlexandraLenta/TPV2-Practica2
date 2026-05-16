@@ -51,6 +51,7 @@ void RunningState::update() {
     // comprobamos al final para asegurarnos de que hemos terminado todas las operaciones antes de salir de la escena
     if (Game::Instance()->getGameOver()) {
         Game::Instance()->setState(Game::State::GAMEOVER);
+        Game::Instance()->setGameOver(false);
     }
 }
 

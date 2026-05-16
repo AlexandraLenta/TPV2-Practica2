@@ -6,14 +6,11 @@
 #include "../sdlutils/InputHandler.h"
 
 void GameOverState::enter() {
-	std::cout << Game::Instance()->getMngr()->getEntities(ecs::grp::FRUIT).size() << '\n';
 	if (Game::Instance()->getMngr()->getEntities(ecs::grp::FRUIT).size() <= 0) {
-		std::cout << "win!\n";
 		_tex = &sdlutils().msgs().at("game_over_win");
 		sdlutils().soundEffects().at("pacman_won").play("se");
 	}
 	else {
-		std::cout << "lose!\n";
 		_tex = &sdlutils().msgs().at("game_over_lose");
 		sdlutils().soundEffects().at("pacman_death").play("se");
 	}

@@ -16,7 +16,6 @@ FoodSystem::~FoodSystem() {
 }
 
 void FoodSystem::createFood() {
-	std::cout << "creating food...\n";
 	int rows = 6;
 	int cols = 8;
 
@@ -53,7 +52,6 @@ void FoodSystem::update() {
 	updateMagicState();
 
 	if (_mngr->getEntities(ecs::grp::FRUIT).size() <= 0) {
-		std::cout << "EMPTY\n";
 		Message m;
 		m.id = _m_GAME_OVER;
 		_mngr->send(m);
@@ -107,10 +105,8 @@ void FoodSystem::recieve(const Message& m) {
 			}
 			break;
 		case _m_PACMAN_FOOD_COLLISION:
-			std::cout << "Col:" << food.size() << '\n';
 			_mngr->setAlive(m.food_collision_data.e, false); // remove fruit
 			if (food.size() <= 1) { // we check -1 because the fruit is not removed till the end of the frame
-				std::cout << "collision game over\n";
 				Message m;
 				m.id = _m_GAME_OVER;
 				_mngr->send(m);
