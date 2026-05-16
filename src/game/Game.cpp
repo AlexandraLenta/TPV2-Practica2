@@ -16,7 +16,12 @@
 using ecs::EntityManager;
 
 Game::Game() :
-		_mngr(nullptr) {
+		_mngr(nullptr),
+		_paused_state(nullptr),
+		_runing_state(nullptr),
+		_newgame_state(nullptr),
+		_newround_state(nullptr),
+		_gameover_state(nullptr) {
 }
 
 Game::~Game() {

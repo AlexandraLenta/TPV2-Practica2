@@ -120,6 +120,7 @@ void PacManSystem::recieve(const Message& m) {
 
 			Message m;
 			if (health->_hp <= 0) {
+				std::cout << "over from hp\n";
 				m.id = _m_GAME_OVER;
 				_mngr->send(m);
 

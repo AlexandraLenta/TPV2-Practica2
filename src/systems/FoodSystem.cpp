@@ -5,10 +5,9 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../components/FoodInfo.h"
-#include "GameCtrlSystem.h"
 #include "../game/Game.h"
 
-FoodSystem::FoodSystem() {
+FoodSystem::FoodSystem() : _pacman(nullptr) {
 
 }
 
@@ -16,7 +15,8 @@ FoodSystem::~FoodSystem() {
 
 }
 
-void FoodSystem::initSystem() {
+void FoodSystem::createFood() {
+	std::cout << "creating food...\n";
 	int rows = 6;
 	int cols = 8;
 
@@ -41,16 +41,19 @@ void FoodSystem::initSystem() {
 
 			auto img = _mngr->addComponent<Image>(e, &sdlutils().images().at("pacman"), FRUIT_ROW, FRUIT_NORMAL_COL);
 
-			_foods.push_back(e);
 		}
 	}
+}
+
+void FoodSystem::initSystem() {
 }
 
 void FoodSystem::update() {
 
 	updateMagicState();
 
-	if (_foods.empty()) {
+	if (_mngr->getEntities(ecs::grp::FRUIT).size() <= 0) {
+		std::cout << "EMPTY\n";
 		Message m;
 		m.id = _m_GAME_OVER;
 		_mngr->send(m);
@@ -61,7 +64,7 @@ void FoodSystem::updateMagicState() {
 
 	auto& vT = sdlutils().virtualTimer();
 
-	for (auto& e : _foods) {
+	for (auto& e : _mngr->getEntities(ecs::grp::FRUIT)) {
 		auto* f = _mngr->getComponent<FoodInfo>(e);
 
 		if (!f->_isMagic) continue;
@@ -85,28 +88,29 @@ void FoodSystem::updateMagicState() {
 }
 
 void FoodSystem::recieve(const Message& m) {
-
+	auto& food = _mngr->getEntities(ecs::grp::FRUIT);
 	switch (m.id) 
 	{
 		case _m_NEW_GAME:
-			for (auto& f : _foods)
-				f->setAlive(false);
+			for (auto& f : food)
+				_mngr->setAlive(f, false);
 			
-			_foods.clear();
-			initSystem();
+			createFood();
+
 			break;
 
 		case _m_ROUND_START:
-			for (auto& f : _foods) {
+			for (auto& f : food) {
 				auto* fInfo = _mngr->getComponent<FoodInfo>(f);
 				fInfo->_isActive = false;
 				fInfo->_lastChangeTime = sdlutils().virtualTimer().currTime();
 			}
 			break;
 		case _m_PACMAN_FOOD_COLLISION:
+			std::cout << "Col:" << food.size() << '\n';
 			_mngr->setAlive(m.food_collision_data.e, false); // remove fruit
-			_foods.erase(std::find(_foods.begin(), _foods.end(), m.food_collision_data.e));
-			if (_foods.size() <= 0) {
+			if (food.size() <= 1) { // we check -1 because the fruit is not removed till the end of the frame
+				std::cout << "collision game over\n";
 				Message m;
 				m.id = _m_GAME_OVER;
 				_mngr->send(m);

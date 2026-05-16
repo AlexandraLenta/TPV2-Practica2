@@ -15,8 +15,7 @@ public:
 
 private:
 	void updateMagicState();
-
-	std::vector<ecs::entity_t> _foods;
+	void createFood();
 
 	ecs::entity_t _pacman;
 

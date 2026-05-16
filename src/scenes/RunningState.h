@@ -20,7 +20,6 @@ private:
     void updateSystems();
 
     PacManSystem* _pacmanSys;
-    GameCtrlSystem* _gameCtrlSys;
     GhostSystem* _ghostSys;
     FoodSystem* _foodSys;
     ImmunitySystem* _immunitySys;

@@ -8,7 +8,7 @@ class PausedState :
     public GameState
 {
 public:
-    PausedState() {}
+    PausedState() : _tex(nullptr) {}
     virtual ~PausedState() {}
 
     void enter() override;

@@ -5,7 +5,6 @@
 #include "../components/Transform.h"
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
-#include "GameCtrlSystem.h"
 #include "../components/Immunity.h"
 
 void GhostSystem::initSystem() {
@@ -24,7 +23,7 @@ void GhostSystem::update() {
 	if (vT.currTime() - _previousSpawnTime >= SPAWN_INTERVAL) {
 		_previousSpawnTime = vT.currTime(); // restart timer
 
-		if (_ghosts.size() < 10 && !_mngr->getComponent<Immunity>(_pacman)->_isImmune) { // check conditions: less than 10 ghosts and pacman not immune			
+		if (_mngr->getEntities(ecs::grp::GHOSTS).size() < 10 && !_mngr->getComponent<Immunity>(_pacman)->_isImmune) { // check conditions: less than 10 ghosts and pacman not immune			
 			auto g = _mngr->addEntity(ecs::grp::GHOSTS); // create the entity
 			
 			// random corner
@@ -38,13 +37,12 @@ void GhostSystem::update() {
 
 			_mngr->addComponent<Transform>(g)->init(Vector2D(x, y), Vector2D(0, 0), GHOST_SIZE, GHOST_SIZE, 0);
 			_mngr->addComponent<FramedImage>(g, &sdlutils().images().at("pacman"), 8, NORMAL_GHOST_SRC_ROW, 0);
-			_ghosts.push_back(g);
 
 		}
 	}
 
 	// Update ghost movement
-	for (auto& g :_ghosts) {
+	for (auto& g : _mngr->getEntities(ecs::grp::GHOSTS)) {
 		auto tr = _mngr->getComponent<Transform>(g);
 
 		// Follow pacman
@@ -67,7 +65,7 @@ void GhostSystem::update() {
 	// advance frame
 	if (sdlutils().virtualTimer().currTime() - _lastFrameChange >= FRAME_CHANGE_INTERVAL) {
 		_lastFrameChange = sdlutils().virtualTimer().currTime();
-		for (auto& g : _ghosts) {
+		for (auto& g : _mngr->getEntities(ecs::grp::GHOSTS)) {
 			auto* gFI = _mngr->getComponent<FramedImage>(g);
 			gFI->_currFrame++;
 
@@ -83,20 +81,19 @@ void GhostSystem::recieve(const Message& m) {
 	switch (m.id) {
 	case _m_ROUND_START:
 	case _m_ROUND_OVER:
-		for (auto g : _ghosts)
+		for (auto g : _mngr->getEntities(ecs::grp::GHOSTS))
 			_mngr->setAlive(g, false);
-		_ghosts.clear();
 		break;
 
 	case _m_IMMUNITY_START:
-		for (auto& g : _ghosts) {
+		for (auto& g : _mngr->getEntities(ecs::grp::GHOSTS)) {
 			auto* img = _mngr->getComponent<FramedImage>(g);
 			img->_texRow = BLUE_GHOST_SRC_ROW;
 		}
 		break;
 
 	case _m_IMMUNITY_END:
-		for (auto& g : _ghosts) {
+		for (auto& g : _mngr->getEntities(ecs::grp::GHOSTS)) {
 			auto* img = _mngr->getComponent<FramedImage>(g);
 			img->_texRow = NORMAL_GHOST_SRC_ROW;
 		}
@@ -107,7 +104,6 @@ void GhostSystem::recieve(const Message& m) {
 
 			sdlutils().soundEffects().at("pacman_chomp").play("se");
 			_mngr->setAlive(m.ghost_collision_data.e, false);
-			_ghosts.erase(std::find(_ghosts.begin(), _ghosts.end(), m.ghost_collision_data.e));
 		}
 		break;
 	}

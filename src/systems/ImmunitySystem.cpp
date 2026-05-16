@@ -4,7 +4,6 @@
 #include "../components/Transform.h"
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
-#include "GameCtrlSystem.h"
 #include "../components/FoodInfo.h"
 
 ImmunitySystem::ImmunitySystem() :_active(false) {

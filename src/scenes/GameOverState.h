@@ -6,7 +6,7 @@ class GameOverState :
     public GameState
 {
 public:
-    GameOverState() {};
+    GameOverState() : _tex(nullptr) {};
 
     void enter() override;
     void update() override;

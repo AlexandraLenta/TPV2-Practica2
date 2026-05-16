@@ -8,7 +8,6 @@
 #include "../sdlutils/macros.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../sdlutils/Texture.h"
-#include "GameCtrlSystem.h"
 #include "../components/Health.h"
 
 RenderSystem::RenderSystem() {

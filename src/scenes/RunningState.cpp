@@ -8,7 +8,6 @@
 #include "../components/Image.h"
 #include "../sdlutils/Texture.h"
 #include "../systems/CollisionsSystem.h"
-#include "../systems/GameCtrlSystem.h"
 #include "../systems/PacManSystem.h"
 #include "../systems/RenderSystem.h"
 #include "../systems/FoodSystem.h"
@@ -17,7 +16,6 @@
 
 RunningState::RunningState() :
     _pacmanSys(nullptr), //
-    _gameCtrlSys(nullptr), //
     _ghostSys(nullptr), //
     _foodSys(nullptr), //
     _immunitySys(nullptr), //
@@ -31,7 +29,6 @@ RunningState::RunningState() :
     _foodSys = mngr->addSystem<FoodSystem>();
     _ghostSys = mngr->addSystem<GhostSystem>();
     _immunitySys = mngr->addSystem<ImmunitySystem>();
-    _gameCtrlSys = mngr->addSystem<GameCtrlSystem>();
     _renderSys = mngr->addSystem<RenderSystem>();
     _collisionSys = mngr->addSystem<CollisionsSystem>();
 }
@@ -63,7 +60,6 @@ RunningState::updateSystems() {
     _foodSys->update();
     _ghostSys->update();
     _immunitySys->update();
-    _gameCtrlSys->update();
     _collisionSys->update();
     _renderSys->update();
 }

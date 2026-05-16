@@ -9,12 +9,10 @@
 
 
 CollisionsSystem::CollisionsSystem() {
-	// TODO Auto-generated constructor stub
 
 }
 
 CollisionsSystem::~CollisionsSystem() {
-	// TODO Auto-generated destructor stub
 }
 
 void CollisionsSystem::initSystem() {

@@ -6,7 +6,7 @@
 class GhostSystem : public ecs::System
 {
 public:
-	GhostSystem() {};
+	GhostSystem() : _pacman(nullptr), _previousSpawnTime(0.0f), _lastFrameChange(0.0f) {};
 	virtual ~GhostSystem() {};
 
 	void initSystem() override;
@@ -15,8 +15,6 @@ public:
 
 private:
 	ecs::entity_t _pacman;
-
-	std::vector<ecs::entity_t> _ghosts;
 
 	float _previousSpawnTime;
 	float _lastFrameChange;
