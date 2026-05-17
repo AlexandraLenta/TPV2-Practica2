@@ -8,6 +8,7 @@ struct Transform;
 struct Image;
 struct FramedImage;
 struct FoodInfo;
+struct GhostInfo;
 struct Health;
 struct Immunity;
 
@@ -16,6 +17,7 @@ struct Immunity;
 	Image, \
 	FramedImage, \
 	FoodInfo, \
+	GhostInfo, \
 	Health, \
 	Immunity
 
@@ -32,20 +34,16 @@ struct Immunity;
 
 // Systems list - must have at least one element
 //
-class StarsSystem;
 class RenderSystem;
 class PacManSystem;
-class GameCtrlSystem;
 class CollisionsSystem;
 class GhostSystem;
 class ImmunitySystem;
 class FoodSystem;
 
 #define _SYS_LIST_ \
-    StarsSystem, \
 	RenderSystem, \
 	PacManSystem, \
-	GameCtrlSystem, \
 	CollisionsSystem, \
 	GhostSystem, \
 	FoodSystem, \

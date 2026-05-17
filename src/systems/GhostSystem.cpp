@@ -6,6 +6,9 @@
 #include "../ecs/EntityManager.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../components/Immunity.h"
+#include "../components/GhostInfo.h"
+#include "../components/Health.h"
+#include "../game/Game.h"
 
 void GhostSystem::initSystem() {
 	_pacman = _mngr->getHandler(ecs::hdlr::PACMAN);
@@ -36,8 +39,20 @@ void GhostSystem::update() {
 			float y = (corner == 0 || corner == 1) ? 0 : sdlutils().height() - GHOST_SIZE;
 
 			_mngr->addComponent<Transform>(g)->init(Vector2D(x, y), Vector2D(0, 0), GHOST_SIZE, GHOST_SIZE, 0);
-			_mngr->addComponent<FramedImage>(g, &sdlutils().images().at("pacman"), 8, NORMAL_GHOST_SRC_ROW, 0);
 
+
+			// weak ghost
+			bool isWeak = (rand() % 100) < 50;
+
+			int hits = 0;
+
+			if (isWeak)
+				hits = 1 + rand() % 5;
+
+			_mngr->addComponent<GhostInfo>(g, isWeak, hits, Vector2D(x, y));
+
+			_mngr->addComponent<FramedImage>(g, &sdlutils().images().at("pacman"), 8, isWeak ? PURPLE_GHOST_SRC_ROW : NORMAL_GHOST_SRC_ROW, 0);
+			std::cout << "Hits: " << hits << '\n';
 		}
 	}
 
@@ -100,11 +115,49 @@ void GhostSystem::recieve(const Message& m) {
 		break;
 
 	case _m_PACMAN_GHOST_COLLISION:
+		auto& ghost = m.ghost_collision_data.e;
 		if (_mngr->getComponent<Immunity>(_pacman)->_isImmune) {
 
 			sdlutils().soundEffects().at("pacman_chomp").play("se");
-			_mngr->setAlive(m.ghost_collision_data.e, false);
+			_mngr->setAlive(ghost, false);
 		}
+		else {
+			auto& ghost = m.ghost_collision_data.e;
+
+			auto* ghostInfo = _mngr->getComponent<GhostInfo>(ghost);
+
+			ghostInfo->_hitsLeft--;
+
+			std::cout << "Hits left: " << ghostInfo->_hitsLeft << '\n';
+			
+			if (ghostInfo->_hitsLeft < 0) {
+
+				auto* health = _mngr->getComponent<Health>(_pacman);
+				health->_hp--;
+
+				Message m;
+				if (health->_hp <= 0) {
+					m.id = _m_GAME_OVER;
+					_mngr->send(m);
+
+					Game::Instance()->setState(Game::State::GAMEOVER);
+				}
+				else {
+					m.id = _m_ROUND_START;
+					_mngr->send(m);
+
+					Game::Instance()->setState(Game::State::NEWROUND);
+				}
+			}
+			else {
+				_mngr->getComponent<Transform>(ghost)->_pos = ghostInfo->_originalPos;
+				if (ghostInfo->_hitsLeft == 0) {
+					auto* img = _mngr->getComponent<FramedImage>(ghost);
+					img->_texRow = NORMAL_GHOST_SRC_ROW;
+				}
+			}
+		}
+
 		break;
 	}
 }

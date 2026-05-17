@@ -10,6 +10,7 @@
 #include "../components/Health.h"
 #include "../components/Immunity.h"
 #include "../game/Game.h"
+#include "../components/GhostInfo.h"
 
 PacManSystem::PacManSystem() :
 		_pmTR(nullptr) {
@@ -114,23 +115,6 @@ void PacManSystem::recieve(const Message& m) {
 		break;
 
 	case _m_PACMAN_GHOST_COLLISION:
-		if (!_mngr->getComponent<Immunity>(_pacman)->_isImmune) {
-			auto* health = _mngr->getComponent<Health>(_pacman);
-			health->_hp--;
-
-			Message m;
-			if (health->_hp <= 0) {
-				m.id = _m_GAME_OVER;
-				_mngr->send(m);
-
-				Game::Instance()->setState(Game::State::GAMEOVER);
-			}
-			else {
-				m.id = _m_ROUND_START;
-				_mngr->send(m);
-
-				Game::Instance()->setState(Game::State::NEWROUND);
-			}
-		}
+		break;
 	}
 }

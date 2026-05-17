@@ -27,5 +27,6 @@ private:
 
 	const float NORMAL_GHOST_SRC_ROW = 4;
 	const float BLUE_GHOST_SRC_ROW = 6;
+	const float PURPLE_GHOST_SRC_ROW = 7;
 };
 

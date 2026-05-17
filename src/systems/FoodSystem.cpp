@@ -39,7 +39,6 @@ void FoodSystem::createFood() {
 			auto foodComp = _mngr->addComponent<FoodInfo>(e, isMagic, sdlutils().virtualTimer().currTime(), activeF, 0.0f);
 
 			auto img = _mngr->addComponent<Image>(e, &sdlutils().images().at("pacman"), FRUIT_ROW, FRUIT_NORMAL_COL);
-
 		}
 	}
 }
